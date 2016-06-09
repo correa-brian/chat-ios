@@ -15,6 +15,11 @@
 		D3B7260B1D0746DF003C3AC6 /* CTMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3B726091D0746DF003C3AC6 /* CTMapViewController.swift */; };
 		D3B7260E1D074918003C3AC6 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3B7260D1D074918003C3AC6 /* APIManager.swift */; };
 		D3B726111D074FD7003C3AC6 /* CTPlace.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3B726101D074FD7003C3AC6 /* CTPlace.swift */; };
+		D3B873F11D09D27D00BD0FAF /* globe-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D3B873F01D09D27D00BD0FAF /* globe-icon@2x.png */; };
+		D3B873F51D09D35C00BD0FAF /* profile-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D3B873F41D09D35C00BD0FAF /* profile-icon@2x.png */; };
+		D3B873F71D09D88000BD0FAF /* CTRegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3B873F61D09D88000BD0FAF /* CTRegisterViewController.swift */; };
+		D3B873F91D09EC6900BD0FAF /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3B873F81D09EC6900BD0FAF /* Config.swift */; };
+		D3B873FB1D09EDEE00BD0FAF /* CTProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3B873FA1D09EDEE00BD0FAF /* CTProfile.swift */; };
 		D834F3DE2E50A99037CC63C6 /* Pods_chat_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D74261D04794169B0FF88DE0 /* Pods_chat_ios.framework */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +36,11 @@
 		D3B726091D0746DF003C3AC6 /* CTMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTMapViewController.swift; sourceTree = "<group>"; };
 		D3B7260D1D074918003C3AC6 /* APIManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
 		D3B726101D074FD7003C3AC6 /* CTPlace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTPlace.swift; sourceTree = "<group>"; };
+		D3B873F01D09D27D00BD0FAF /* globe-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "globe-icon@2x.png"; sourceTree = "<group>"; };
+		D3B873F41D09D35C00BD0FAF /* profile-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "profile-icon@2x.png"; sourceTree = "<group>"; };
+		D3B873F61D09D88000BD0FAF /* CTRegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTRegisterViewController.swift; sourceTree = "<group>"; };
+		D3B873F81D09EC6900BD0FAF /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		D3B873FA1D09EDEE00BD0FAF /* CTProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTProfile.swift; sourceTree = "<group>"; };
 		D74261D04794169B0FF88DE0 /* Pods_chat_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_chat_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -84,14 +94,16 @@
 		D3B725EE1D073EA2003C3AC6 /* chat-ios */ = {
 			isa = PBXGroup;
 			children = (
+				D3B725F61D073EA2003C3AC6 /* Assets.xcassets */,
+				D3B725EF1D073EA2003C3AC6 /* AppDelegate.swift */,
+				D3B873F81D09EC6900BD0FAF /* Config.swift */,
+				D3B726011D073EFD003C3AC6 /* CTViewController.swift */,
+				D3B725FB1D073EA2003C3AC6 /* Info.plist */,
+				D3B873ED1D09D12100BD0FAF /* Images */,
 				D3B7260F1D074FC4003C3AC6 /* Models */,
 				D3B7260C1D0748D5003C3AC6 /* Utils */,
 				D3B726071D074689003C3AC6 /* ViewControllers */,
-				D3B725EF1D073EA2003C3AC6 /* AppDelegate.swift */,
-				D3B725F61D073EA2003C3AC6 /* Assets.xcassets */,
 				D3B725F81D073EA2003C3AC6 /* LaunchScreen.storyboard */,
-				D3B725FB1D073EA2003C3AC6 /* Info.plist */,
-				D3B726011D073EFD003C3AC6 /* CTViewController.swift */,
 			);
 			path = "chat-ios";
 			sourceTree = "<group>";
@@ -101,6 +113,7 @@
 			children = (
 				D3B726081D0746DF003C3AC6 /* CTAccountViewController.swift */,
 				D3B726091D0746DF003C3AC6 /* CTMapViewController.swift */,
+				D3B873F61D09D88000BD0FAF /* CTRegisterViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -117,8 +130,18 @@
 			isa = PBXGroup;
 			children = (
 				D3B726101D074FD7003C3AC6 /* CTPlace.swift */,
+				D3B873FA1D09EDEE00BD0FAF /* CTProfile.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		D3B873ED1D09D12100BD0FAF /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				D3B873F01D09D27D00BD0FAF /* globe-icon@2x.png */,
+				D3B873F41D09D35C00BD0FAF /* profile-icon@2x.png */,
+			);
+			path = Images;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -184,7 +207,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				D3B725FA1D073EA2003C3AC6 /* LaunchScreen.storyboard in Resources */,
+				D3B873F11D09D27D00BD0FAF /* globe-icon@2x.png in Resources */,
 				D3B725F71D073EA2003C3AC6 /* Assets.xcassets in Resources */,
+				D3B873F51D09D35C00BD0FAF /* profile-icon@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -244,9 +269,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				D3B726111D074FD7003C3AC6 /* CTPlace.swift in Sources */,
+				D3B873F71D09D88000BD0FAF /* CTRegisterViewController.swift in Sources */,
+				D3B873FB1D09EDEE00BD0FAF /* CTProfile.swift in Sources */,
 				D3B7260B1D0746DF003C3AC6 /* CTMapViewController.swift in Sources */,
 				D3B7260A1D0746DF003C3AC6 /* CTAccountViewController.swift in Sources */,
 				D3B7260E1D074918003C3AC6 /* APIManager.swift in Sources */,
+				D3B873F91D09EC6900BD0FAF /* Config.swift in Sources */,
 				D3B725F01D073EA2003C3AC6 /* AppDelegate.swift in Sources */,
 				D3B726021D073EFD003C3AC6 /* CTViewController.swift in Sources */,
 			);

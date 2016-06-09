@@ -16,6 +16,16 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
     var locationManager: CLLocationManager!
     var places = Array<CTPlace>()
     
+    required init?(coder aDecoder: NSCoder){
+        super.init(coder: aDecoder)
+    }
+    
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?){
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        self.title = "Map"
+        self.tabBarItem.image = UIImage(named: "globe-icon.png")
+    }
+    
     override func loadView() {
         let frame = UIScreen.mainScreen().bounds
         let view = UIView(frame: frame)
@@ -73,7 +83,7 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
         self.mapView.setRegion(region, animated: true)
         
         //MAKE API REQUEST TO OUR BACKEND:
-        let url = "http://localhost:3000/api/place"
+        let url = "/api/place"
         let params = [
             "lat": currentLocation.coordinate.latitude,
             "lng": currentLocation.coordinate.longitude

@@ -19,10 +19,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let frame = UIScreen.mainScreen().bounds
         self.window = UIWindow(frame: frame)
         
-        let mapVc = CTMapViewController()
         let accountVc = CTAccountViewController()
+        let mapVc = CTMapViewController()
+        let accountNavCtr = UINavigationController(rootViewController: accountVc)
+        
         let tabCtr = UITabBarController()
-        tabCtr.viewControllers = [mapVc, accountVc]
+        tabCtr.viewControllers = [mapVc, accountNavCtr]
         
         self.window?.rootViewController = tabCtr
         self.window?.makeKeyAndVisible()
