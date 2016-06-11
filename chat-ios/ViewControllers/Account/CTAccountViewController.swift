@@ -10,6 +10,8 @@ import UIKit
 
 class CTAccountViewController: CTViewController {
     
+    var loginButtons = Array<UIButton>()
+    
     required init?(coder aDecoder: NSCoder){
         super.init(coder: aDecoder)
     }
@@ -25,28 +27,11 @@ class CTAccountViewController: CTViewController {
         let view = UIView(frame: frame)
         view.backgroundColor = UIColor.redColor()
         
-        let padding = CGFloat(20)
-        let width = frame.size.width-2*padding
-        let height = CGFloat(44)
-        let bgColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.65)
-        let whiteColor = UIColor.whiteColor()
-        let font = UIFont(name: "Heiti SC", size: 18)
-        var y = CGFloat(120)
-
-        let buttonTitles = ["Sign Up", "Login"]
-        for btnTitle in buttonTitles {
-            let btn = UIButton(type: .Custom)
-            btn.frame = CGRect(x: padding, y: y, width: width, height: height)
-            btn.backgroundColor = bgColor
-            btn.layer.cornerRadius = 0.5*height
-            btn.layer.borderWidth = 2
-            btn.layer.borderColor = whiteColor.CGColor
-            btn.setTitle(btnTitle, forState: .Normal)
-            btn.setTitleColor(whiteColor, forState: .Normal)
-            btn.titleLabel?.font = font
-            btn.addTarget(self, action: #selector(CTAccountViewController.buttonTapped(_:)), forControlEvents: .TouchUpInside)
-            view.addSubview(btn)
-            y += height + padding
+        if (CTViewController.currentUser.id == nil){ // not logged in
+            self.loadSignUpView(frame, view: view)
+        }
+        else{ //logged in
+            self.loadAccountView(frame, view: view)
         }
         
 //        let btnSignUp = UIButton(type: .Custom)
@@ -80,6 +65,54 @@ class CTAccountViewController: CTViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.navigationItem.hidesBackButton = true
+        
+    }
+    
+    func loadAccountView(frame: CGRect, view: UIView){
+
+        let padding = CGFloat(20)
+        let width = frame.size.width-2*padding
+//        let height = CGFloat(44)
+//        let bgColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.65)
+//        let whiteColor = UIColor.whiteColor()
+//        let font = UIFont(name: "Heiti SC", size: 18)
+        var y = CGFloat(120)
+        
+        let nameLabel = UILabel(frame: CGRect(x: padding, y: y, width: width, height: 22))
+        nameLabel.text = CTViewController.currentUser.email //change to username
+        view.addSubview(nameLabel)
+
+    }
+    
+    func loadSignUpView(frame: CGRect, view: UIView){
+        
+        let padding = CGFloat(20)
+        let width = frame.size.width-2*padding
+        let height = CGFloat(44)
+        let bgColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.65)
+        let whiteColor = UIColor.whiteColor()
+        let font = UIFont(name: "Heiti SC", size: 18)
+        var y = CGFloat(120)
+        
+        let buttonTitles = ["Sign Up", "Login"]
+        for btnTitle in buttonTitles {
+            let btn = UIButton(type: .Custom)
+            btn.frame = CGRect(x: padding, y: y, width: width, height: height)
+            btn.backgroundColor = bgColor
+            btn.layer.cornerRadius = 0.5*height
+            btn.layer.borderWidth = 2
+            btn.layer.borderColor = whiteColor.CGColor
+            btn.setTitle(btnTitle, forState: .Normal)
+            btn.setTitleColor(whiteColor, forState: .Normal)
+            btn.titleLabel?.font = font
+            btn.addTarget(self, action: #selector(CTAccountViewController.buttonTapped(_:)), forControlEvents: .TouchUpInside)
+            view.addSubview(btn)
+            self.loginButtons.append(btn)
+            y += height + padding
+        
+        }
+
     }
     
     func buttonTapped(btn: UIButton){
@@ -90,6 +123,24 @@ class CTAccountViewController: CTViewController {
             let registerVc = CTRegisterViewController()
             self.navigationController?.pushViewController(registerVc, animated: true)
         }
+        
+        if(buttonTitle == "login"){
+            let loginVc = CTLoginViewController()
+            self.navigationController?.pushViewController(loginVc, animated: true)
+        }
+    }
+    
+    override func userLoggedIn(notification: NSNotification){
+        super.userLoggedIn(notification)
+        
+        if(CTViewController.currentUser.id == nil){
+            return
+        }
+        
+        for btn in self.loginButtons{
+            btn.alpha = 0
+        }
+        
     }
     
     override func didReceiveMemoryWarning() {

@@ -10,7 +10,7 @@ import UIKit
 
 class CTViewController: UIViewController {
     
-    var currentUser: CTProfile?
+    static var currentUser = CTProfile() //shared across application
     
     required init?(coder aDecoder: NSCoder){
         super.init(coder: aDecoder)
@@ -24,6 +24,7 @@ class CTViewController: UIViewController {
                                        selector: #selector(CTViewController.userLoggedIn(_:)),
                                        name: Constants.kUserLoggedInNotification,
                                        object: nil)
+        
     }
 
     override func viewDidLoad() {
@@ -34,18 +35,14 @@ class CTViewController: UIViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        if(self.currentUser == nil){
-            return
-        }
-        
-        print("CurrentUser: \(self.currentUser?.username)")
+        print("CurrentUser: \(CTViewController.currentUser.id)")
+    
     }
     
     func userLoggedIn(notification: NSNotification){
-        print("userLoggedIn: \(notification.userInfo)")
-        
-        let user = notification.userInfo!["user"] as? CTProfile
-        self.currentUser = user
+        if let user = notification.userInfo!["user"] as? Dictionary<String, AnyObject>{
+            CTViewController.currentUser.populate(user)
+        }
     }
 
     override func didReceiveMemoryWarning() {

@@ -87,25 +87,29 @@ class CTRegisterViewController: CTViewController, UITextFieldDelegate {
             
             APIManager.postRequest("/api/profile",
                                    params: profileInfo,
-                                   completion: { response in
+                                   completion: { error, response in
+                                    
                                     print("\(response)")
                                     
-                                    if let result = response["result"] as? Dictionary<String, AnyObject>{
-                                        let user = CTProfile()
-                                        user.populate(result)
+                                    if let result = response!["result"] as?
+                                        Dictionary<String, AnyObject>{
+                                    
+                                    CTViewController.currentUser.populate(result)
                                         
-                                        let notification = NSNotification(
-                                            name: Constants.kUserLoggedInNotification,
-                                            object: nil,
-                                            userInfo: ["user":user])
+                                    dispatch_async(dispatch_get_main_queue(), {
                                         
-                                        let notificationCenter = NSNotificationCenter.defaultCenter()
-                                        notificationCenter.postNotification(notification)
+                                        let accountVc = CTAccountViewController()
+                                        self.navigationController?.pushViewController(accountVc, animated: true)
+                                        
+                                    })
+                                    
                                     }
+
             })
             
             return true
         }
+        
         let nextField = self.textFields[index+1]
         nextField.becomeFirstResponder()
         
