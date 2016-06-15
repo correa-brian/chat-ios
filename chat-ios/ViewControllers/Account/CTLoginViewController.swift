@@ -114,6 +114,7 @@ class CTLoginViewController: CTViewController, UITextFieldDelegate {
                                         CTViewController.currentUser.populate(result)
                                         
                                         dispatch_async(dispatch_get_main_queue(), {
+                                            self.postLoggedInNotification(result)
                                             let accountVc = CTAccountViewController()
                                             self.navigationController?.pushViewController(accountVc, animated: true)
                                         })

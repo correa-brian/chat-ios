@@ -13,4 +13,5 @@ struct Constants {
     
     //Notification:
     static let kUserLoggedInNotification = "UserLoggedInNotification"
+    static let kPlaceCreatedNotification = "kPlaceCreatedNotification"
 }

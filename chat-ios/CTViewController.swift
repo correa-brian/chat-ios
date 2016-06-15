@@ -44,6 +44,19 @@ class CTViewController: UIViewController {
             CTViewController.currentUser.populate(user)
         }
     }
+    
+    func postLoggedInNotification(currentUser: Dictionary<String, AnyObject>){
+        let notification = NSNotification(
+            name: Constants.kUserLoggedInNotification,
+            object: nil,
+            userInfo: ["user":currentUser]
+        )
+        
+        let notificationCenter = NSNotificationCenter.defaultCenter()
+        notificationCenter.postNotification(notification)
+        
+        
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
