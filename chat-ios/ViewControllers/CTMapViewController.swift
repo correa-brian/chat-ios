@@ -16,6 +16,7 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
     var locationManager: CLLocationManager!
     var places = Array<CTPlace>()
     var btnCreatePlace: UIButton!
+    var currentLocation: CLLocation?
     
     required init?(coder aDecoder: NSCoder){
         super.init(coder: aDecoder)
@@ -23,6 +24,8 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?){
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+        
+        edgesForExtendedLayout = .None
         self.title = "Map"
         self.tabBarItem.image = UIImage(named: "globe-icon.png")
         
@@ -31,11 +34,10 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
                                        selector: #selector(CTMapViewController.placeCreated(_:)),
                                        name: Constants.kPlaceCreatedNotification,
                                        object: nil)
-        
-        
     }
     
     override func loadView() {
+        
         let frame = UIScreen.mainScreen().bounds
         let view = UIView(frame: frame)
         view.backgroundColor = .redColor()
@@ -44,7 +46,7 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
         self.mapView.delegate = self
         view.addSubview(mapView)
         
-        let padding = CGFloat(20)
+        let padding = CGFloat(Constants.padding)
         let height = CGFloat(44)
         
         self.btnCreatePlace = CTButton(frame: CGRect(x: padding, y: -height, width: frame.size.width-2*padding, height: height))
@@ -90,6 +92,16 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
                 self.mapView.addAnnotation(place)
                 
                 let ctr = CLLocationCoordinate2DMake(place.lat, place.lng)
+                
+                // check distance
+                let coord = CLLocation(latitude: place.lat, longitude: place.lng)
+                let mapCenter = CLLocation(latitude: self.mapView.centerCoordinate.latitude, longitude: self.mapView.centerCoordinate.longitude)
+                
+                let delta = mapCenter.distanceFromLocation(coord)
+                if (delta < 750){ //don't move map, not far away enoug yet
+                    return
+                }
+
                 self.mapView.setCenterCoordinate(ctr, animated: true)
             })
         }
@@ -114,7 +126,6 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
     func showCreateButton(){
         
         self.btnCreatePlace.alpha = 1
-        
         UIView.animateWithDuration(1.25,
                                    delay: 0,
                                    usingSpringWithDamping: 0.5,
@@ -125,7 +136,6 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
                                     frame.origin.y = 20
                                     self.btnCreatePlace.frame = frame
             }, completion: nil)
-        
     }
     
     func createPlace(){
@@ -133,6 +143,35 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
         
         let createPlaceVc = CTCreatePlaceViewController()
         self.presentViewController(createPlaceVc, animated: true, completion: nil)
+        
+    }
+    
+    func searchPlaces(lat: CLLocationDegrees, lng: CLLocationDegrees){
+        
+        //MAKE API REQUEST TO OUR BACKEND:
+        let params = [
+            "lat": lat,
+            "lng": lng
+        ]
+        
+        APIManager.getRequest("/api/place", params: params, completion: { response in
+            print("\(response)")
+            
+            if let results = response["results"] as? Array<Dictionary<String, AnyObject>>{
+                self.mapView.removeAnnotations(self.places)
+                self.places.removeAll()
+                for placeInfo in results {
+                    let place = CTPlace()
+                    place.populate(placeInfo)
+                    self.places.append(place)
+                }
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.mapView.addAnnotations(self.places)
+                })
+            }
+            
+        })
         
     }
     
@@ -150,8 +189,46 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
         let pin = MKPinAnnotationView(annotation: annotation, reuseIdentifier: pinId)
         pin.animatesDrop = true
         pin.canShowCallout = true
+    
+        pin.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
+        
         return pin
     }
+    
+    func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        print("regionDidChangeAnimated: \(mapView.centerCoordinate.latitude), \(mapView.centerCoordinate.longitude)")
+        
+        // First time, always run:
+        if(self.currentLocation == nil){
+            self.searchPlaces(mapView.centerCoordinate.latitude, lng: mapView.centerCoordinate.longitude)
+            return
+        }
+
+        let mapCenter = CLLocation(latitude: mapView.centerCoordinate.latitude, longitude: mapView.centerCoordinate.longitude)
+        
+        let delta = mapCenter.distanceFromLocation(self.currentLocation!)
+
+        if(delta < 750){ //not far enough, ignore
+            return
+        }
+        
+        print("DELTA == \(delta)")
+        self.currentLocation = mapCenter
+        self.searchPlaces(mapView.centerCoordinate.latitude, lng: mapView.centerCoordinate.longitude)
+    }
+    
+    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        
+        let place = view.annotation as! CTPlace
+        print("calloutAccessoryControlTapped: \(place.name)")
+        
+        let chatVc = CTChatViewController()
+        chatVc.place = place
+        self.navigationController?.pushViewController(chatVc, animated: true)
+        
+    }
+    
+    // MARK: LocationManagerDelegate
     
     func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus){
         if (status == .AuthorizedWhenInUse){
@@ -163,37 +240,16 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]){
         print("didUpdateLocations: \(locations)")
         self.locationManager.stopUpdatingLocation()
-        let currentLocation = locations[0]
+        self.currentLocation = locations[0]
         
-        self.mapView.centerCoordinate = CLLocationCoordinate2DMake(currentLocation.coordinate.latitude, currentLocation.coordinate.longitude)
+        self.mapView.centerCoordinate = CLLocationCoordinate2DMake(self.currentLocation!.coordinate.latitude, self.currentLocation!.coordinate.longitude)
         
         let dist = CLLocationDistance(500)
         let region = MKCoordinateRegionMakeWithDistance(self.mapView.centerCoordinate, dist, dist)
         self.mapView.setRegion(region, animated: true)
         
         //MAKE API REQUEST TO OUR BACKEND:
-        let url = "/api/place"
-        let params = [
-            "lat": currentLocation.coordinate.latitude,
-            "lng": currentLocation.coordinate.longitude
-            ]
-        
-        APIManager.getRequest(url, params: params, completion: { response in
-            print("\(response)")
-            
-            if let results = response["results"] as? Array<Dictionary<String, AnyObject>>{
-                for placeInfo in results {
-                    let place = CTPlace()
-                    place.populate(placeInfo)
-                    self.places.append(place)
-                }
-                
-                dispatch_async(dispatch_get_main_queue(), {
-                    self.mapView.addAnnotations(self.places)
-                })
-            }
-            
-        })
+        self.searchPlaces(self.currentLocation!.coordinate.latitude, lng: self.currentLocation!.coordinate.longitude)
     }
     
     override func didReceiveMemoryWarning() {
