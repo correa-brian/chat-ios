@@ -83,14 +83,13 @@ class CTAccountViewController: CTViewController {
     
     func loadSignUpView(frame: CGRect, view: UIView){
         
-        let padding = CGFloat(20)
+        let padding = CGFloat(Constants.padding)
         let width = frame.size.width-2*padding
         let height = CGFloat(44)
-        var y = CGFloat(120)
+        var y = CGFloat(Constants.origin_y)
         
         let buttonTitles = ["Sign Up", "Login"]
         for btnTitle in buttonTitles {
-//            let btn = UIButton(type: .Custom)
             let btn = CTButton(frame: CGRect(x: padding, y: y, width: width, height: height))
             btn.setTitle(btnTitle, forState: .Normal)
             btn.addTarget(self, action: #selector(CTAccountViewController.buttonTapped(_:)), forControlEvents: .TouchUpInside)

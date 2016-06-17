@@ -23,6 +23,9 @@
 		D3B873F51D09D35C00BD0FAF /* profile-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D3B873F41D09D35C00BD0FAF /* profile-icon@2x.png */; };
 		D3B873F91D09EC6900BD0FAF /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3B873F81D09EC6900BD0FAF /* Config.swift */; };
 		D3B873FB1D09EDEE00BD0FAF /* CTProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3B873FA1D09EDEE00BD0FAF /* CTProfile.swift */; };
+		D3CDF57A1D13197C00B7E86B /* CTTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CDF5791D13197C00B7E86B /* CTTextField.swift */; };
+		D3CDF57C1D13347000B7E86B /* CTChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CDF57B1D13347000B7E86B /* CTChatViewController.swift */; };
+		D3CDF57E1D1337ED00B7E86B /* CTChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CDF57D1D1337ED00B7E86B /* CTChatTableViewCell.swift */; };
 		D834F3DE2E50A99037CC63C6 /* Pods_chat_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D74261D04794169B0FF88DE0 /* Pods_chat_ios.framework */; };
 /* End PBXBuildFile section */
 
@@ -47,6 +50,9 @@
 		D3B873F41D09D35C00BD0FAF /* profile-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "profile-icon@2x.png"; sourceTree = "<group>"; };
 		D3B873F81D09EC6900BD0FAF /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		D3B873FA1D09EDEE00BD0FAF /* CTProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTProfile.swift; sourceTree = "<group>"; };
+		D3CDF5791D13197C00B7E86B /* CTTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTTextField.swift; sourceTree = "<group>"; };
+		D3CDF57B1D13347000B7E86B /* CTChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTChatViewController.swift; sourceTree = "<group>"; };
+		D3CDF57D1D1337ED00B7E86B /* CTChatTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTChatTableViewCell.swift; sourceTree = "<group>"; };
 		D74261D04794169B0FF88DE0 /* Pods_chat_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_chat_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -83,6 +89,8 @@
 			isa = PBXGroup;
 			children = (
 				D33DF9641D107E6C001E8E27 /* CTButton.swift */,
+				D3CDF5791D13197C00B7E86B /* CTTextField.swift */,
+				D3CDF57D1D1337ED00B7E86B /* CTChatTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -139,6 +147,7 @@
 			children = (
 				D3957F731D0B3A310060888D /* Account */,
 				D3B726091D0746DF003C3AC6 /* CTMapViewController.swift */,
+				D3CDF57B1D13347000B7E86B /* CTChatViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -297,6 +306,8 @@
 				D33DF9671D1083EC001E8E27 /* CTCreatePlaceViewController.swift in Sources */,
 				D3B726111D074FD7003C3AC6 /* CTPlace.swift in Sources */,
 				D3B873FB1D09EDEE00BD0FAF /* CTProfile.swift in Sources */,
+				D3CDF57A1D13197C00B7E86B /* CTTextField.swift in Sources */,
+				D3CDF57C1D13347000B7E86B /* CTChatViewController.swift in Sources */,
 				D33DF9651D107E6C001E8E27 /* CTButton.swift in Sources */,
 				D3B7260B1D0746DF003C3AC6 /* CTMapViewController.swift in Sources */,
 				D3957F761D0B3A740060888D /* CTAccountViewController.swift in Sources */,
@@ -304,6 +315,7 @@
 				D3B7260E1D074918003C3AC6 /* APIManager.swift in Sources */,
 				D3B873F91D09EC6900BD0FAF /* Config.swift in Sources */,
 				D3B725F01D073EA2003C3AC6 /* AppDelegate.swift in Sources */,
+				D3CDF57E1D1337ED00B7E86B /* CTChatTableViewCell.swift in Sources */,
 				D3B726021D073EFD003C3AC6 /* CTViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
