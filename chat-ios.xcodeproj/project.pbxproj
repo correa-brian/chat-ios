@@ -12,6 +12,7 @@
 		D3957F761D0B3A740060888D /* CTAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3957F741D0B3A740060888D /* CTAccountViewController.swift */; };
 		D3957F771D0B3A740060888D /* CTRegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3957F751D0B3A740060888D /* CTRegisterViewController.swift */; };
 		D3957F791D0B3AEE0060888D /* CTLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3957F781D0B3AEE0060888D /* CTLoginViewController.swift */; };
+		D39F19501D19AC72006BDA89 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D39F194F1D19AC72006BDA89 /* GoogleService-Info.plist */; };
 		D3B725F01D073EA2003C3AC6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3B725EF1D073EA2003C3AC6 /* AppDelegate.swift */; };
 		D3B725F71D073EA2003C3AC6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D3B725F61D073EA2003C3AC6 /* Assets.xcassets */; };
 		D3B725FA1D073EA2003C3AC6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D3B725F81D073EA2003C3AC6 /* LaunchScreen.storyboard */; };
@@ -37,6 +38,7 @@
 		D3957F741D0B3A740060888D /* CTAccountViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTAccountViewController.swift; sourceTree = "<group>"; };
 		D3957F751D0B3A740060888D /* CTRegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTRegisterViewController.swift; sourceTree = "<group>"; };
 		D3957F781D0B3AEE0060888D /* CTLoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTLoginViewController.swift; sourceTree = "<group>"; };
+		D39F194F1D19AC72006BDA89 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D3B725EC1D073EA2003C3AC6 /* chat-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "chat-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D3B725EF1D073EA2003C3AC6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D3B725F61D073EA2003C3AC6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 				D3B873F81D09EC6900BD0FAF /* Config.swift */,
 				D3B726011D073EFD003C3AC6 /* CTViewController.swift */,
 				D3B725FB1D073EA2003C3AC6 /* Info.plist */,
+				D39F194F1D19AC72006BDA89 /* GoogleService-Info.plist */,
 				D3B873ED1D09D12100BD0FAF /* Images */,
 				D3B7260F1D074FC4003C3AC6 /* Models */,
 				D3B7260C1D0748D5003C3AC6 /* Utils */,
@@ -242,6 +245,7 @@
 			files = (
 				D3B725FA1D073EA2003C3AC6 /* LaunchScreen.storyboard in Resources */,
 				D3B873F11D09D27D00BD0FAF /* globe-icon@2x.png in Resources */,
+				D39F19501D19AC72006BDA89 /* GoogleService-Info.plist in Resources */,
 				D3B725F71D073EA2003C3AC6 /* Assets.xcassets in Resources */,
 				D3B873F51D09D35C00BD0FAF /* profile-icon@2x.png in Resources */,
 			);
