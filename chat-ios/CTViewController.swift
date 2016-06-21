@@ -24,7 +24,6 @@ class CTViewController: UIViewController {
                                        selector: #selector(CTViewController.userLoggedIn(_:)),
                                        name: Constants.kUserLoggedInNotification,
                                        object: nil)
-        
     }
 
     override func viewDidLoad() {
