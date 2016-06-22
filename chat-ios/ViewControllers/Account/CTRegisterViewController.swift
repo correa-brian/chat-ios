@@ -84,8 +84,8 @@ class CTRegisterViewController: CTViewController, UITextFieldDelegate {
                                     
                                     print("\(response)")
                                     
-                                    if let result = response!["result"] as?
-                                        Dictionary<String, AnyObject>{
+                                if let result = response!["result"] as?
+                                    Dictionary<String, AnyObject>{
                                         
                                     dispatch_async(dispatch_get_main_queue(), {
                                         self.postLoggedInNotification(result)
@@ -94,7 +94,7 @@ class CTRegisterViewController: CTViewController, UITextFieldDelegate {
                                         
                                     })
                                     
-                                    }
+                                }
 
             })
             
@@ -110,6 +110,5 @@ class CTRegisterViewController: CTViewController, UITextFieldDelegate {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-    
 
 }

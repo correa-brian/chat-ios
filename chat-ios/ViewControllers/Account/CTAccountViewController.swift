@@ -71,9 +71,9 @@ class CTAccountViewController: CTViewController {
     
     func loadAccountView(frame: CGRect, view: UIView){
 
-        let padding = CGFloat(20)
+        let padding = CGFloat(Constants.padding)
         let width = frame.size.width-2*padding
-        let y = CGFloat(120)
+        let y = CGFloat(Constants.origin_y)
         
         let nameLabel = UILabel(frame: CGRect(x: padding, y: y, width: width, height: 22))
         nameLabel.text = CTViewController.currentUser.email //change to username

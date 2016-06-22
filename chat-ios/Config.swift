@@ -9,7 +9,9 @@
 import Foundation
 
 struct Constants {
-    static let baseUrl = "http:localhost:3000"
+    
+//    static let baseUrl = "http:localhost:3000"
+    static let baseUrl = "https://velocity-chat-app.herokuapp.com"
     
     //Notification:
     static let kUserLoggedInNotification = "UserLoggedInNotification"
