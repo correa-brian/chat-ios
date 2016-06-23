@@ -10,6 +10,7 @@
 		D33DF9651D107E6C001E8E27 /* CTButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33DF9641D107E6C001E8E27 /* CTButton.swift */; };
 		D33DF9671D1083EC001E8E27 /* CTCreatePlaceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33DF9661D1083EC001E8E27 /* CTCreatePlaceViewController.swift */; };
 		D3797A021D1AF70D004BDA9F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D3797A011D1AF70D004BDA9F /* GoogleService-Info.plist */; };
+		D3797A041D1B164A004BDA9F /* CTPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3797A031D1B164A004BDA9F /* CTPost.swift */; };
 		D3957F761D0B3A740060888D /* CTAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3957F741D0B3A740060888D /* CTAccountViewController.swift */; };
 		D3957F771D0B3A740060888D /* CTRegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3957F751D0B3A740060888D /* CTRegisterViewController.swift */; };
 		D3957F791D0B3AEE0060888D /* CTLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3957F781D0B3AEE0060888D /* CTLoginViewController.swift */; };
@@ -36,6 +37,7 @@
 		D33DF9641D107E6C001E8E27 /* CTButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTButton.swift; sourceTree = "<group>"; };
 		D33DF9661D1083EC001E8E27 /* CTCreatePlaceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTCreatePlaceViewController.swift; sourceTree = "<group>"; };
 		D3797A011D1AF70D004BDA9F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		D3797A031D1B164A004BDA9F /* CTPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTPost.swift; sourceTree = "<group>"; };
 		D3957F741D0B3A740060888D /* CTAccountViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTAccountViewController.swift; sourceTree = "<group>"; };
 		D3957F751D0B3A740060888D /* CTRegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTRegisterViewController.swift; sourceTree = "<group>"; };
 		D3957F781D0B3AEE0060888D /* CTLoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTLoginViewController.swift; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 			children = (
 				D3B726101D074FD7003C3AC6 /* CTPlace.swift */,
 				D3B873FA1D09EDEE00BD0FAF /* CTProfile.swift */,
+				D3797A031D1B164A004BDA9F /* CTPost.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -310,6 +313,7 @@
 				D33DF9671D1083EC001E8E27 /* CTCreatePlaceViewController.swift in Sources */,
 				D3B726111D074FD7003C3AC6 /* CTPlace.swift in Sources */,
 				D3B873FB1D09EDEE00BD0FAF /* CTProfile.swift in Sources */,
+				D3797A041D1B164A004BDA9F /* CTPost.swift in Sources */,
 				D3CDF57A1D13197C00B7E86B /* CTTextField.swift in Sources */,
 				D3CDF57C1D13347000B7E86B /* CTChatViewController.swift in Sources */,
 				D33DF9651D107E6C001E8E27 /* CTButton.swift in Sources */,
