@@ -26,7 +26,6 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
     var messageField: UITextField!
     
     // MARK: - Lifecycle Methods
-    
     required init?(coder aDecoder: NSCoder){
         super.init(coder: aDecoder)
     }
@@ -35,6 +34,22 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         
         self.hidesBottomBarWhenPushed = true
+        
+        let notificationCenter = NSNotificationCenter.defaultCenter()
+        
+        notificationCenter.addObserver(
+        self,
+        selector: #selector(CTChatViewController.shiftKeyboardUp(_:)),
+        name: UIKeyboardWillShowNotification,
+        object: nil
+        )
+        
+        notificationCenter.addObserver(
+            self,
+            selector: #selector(CTChatViewController.shiftKeyboardDown(_:)),
+            name: UIKeyboardWillHideNotification,
+            object: nil
+        )
     }
     
     override func loadView(){
@@ -89,7 +104,7 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
         print("viewWillAppear:")
         
         //Listen for new messages in the FB DB
-        self._refHandle = self.firebase.child(self.place.id).observeEventType(.Value, withBlock: { (snapshot) -> Void in
+        self._refHandle = self.firebase.child(self.place.id).queryLimitedToLast(25).observeEventType(.Value, withBlock: { (snapshot) -> Void in
             
             if let payload = snapshot.value as? Dictionary<String, AnyObject> {
                 
@@ -156,26 +171,25 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
         self.firebase.child(self.place.id).childByAutoId().setValue(post)
         
         self.messageField.text = nil
-        self.shiftView(0)
-        
+    
     }
     
-    func shiftView(position: CGFloat){
-        
-        if(self.view.frame.origin.y == position){
-            return
+    //MARK - KeyboardNotifcations:
+    
+    func shiftKeyboardUp(notification: NSNotification){
+        if let keyboardFrame = notification.userInfo![UIKeyboardFrameEndUserInfoKey]?.CGRectValue() {
+//            print("\(notification.userInfo!)")
+            
+            var frame = self.bottomView.frame
+            frame.origin.y = keyboardFrame.origin.y-frame.size.height
+            self.bottomView.frame = frame
         }
-        
-        UIView.animateWithDuration(0.25,
-                                   delay: 0,
-                                   options: .CurveEaseInOut,
-                                   animations: {
-                                    var frame = self.view.frame
-                                    frame.origin.y = position
-                                    self.view.frame = frame
-            },
-                                   completion: nil)
-        
+    }
+    
+    func shiftKeyboardDown(notfcation: NSNotification){
+        var frame = self.bottomView.frame
+        frame.origin.y = self.view.frame.size.height-frame.size.height
+        self.bottomView.frame = frame
     }
     
     //MARK: - TextField Delegate
@@ -187,13 +201,11 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
         return true
     }
     
-    func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
-        
-        self.shiftView(-270)
-        return true
-    }
-    
     //MARK: - TableView Delegate
+    
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        self.messageField.resignFirstResponder()
+    }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.posts.count
@@ -203,10 +215,10 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
         
         let post = self.posts[indexPath.row]
         
-        let cell = tableView.dequeueReusableCellWithIdentifier(CTChatTableViewCell.cellId, forIndexPath: indexPath)
-        cell.textLabel?.text = post.message
+        let cell = tableView.dequeueReusableCellWithIdentifier(CTChatTableViewCell.cellId, forIndexPath: indexPath) as! CTChatTableViewCell
+        cell.messageLabel.text = post.message
+        cell.dateLabel.text = post.formattedDate
         return cell
-        
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
