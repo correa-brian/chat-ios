@@ -11,17 +11,21 @@ import Firebase
 
 class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
-    //Firebase Config:
+    //MARK: - Firebase Config:
     var firebase: FIRDatabaseReference! // establishes connection and maintains connection to DB
     var _refHandle: UInt!
     
+    // MARK: - Properties
+    
     var place: CTPlace!
     var chatTable: UITableView!
-    var posts = Array<Dictionary<String, AnyObject>>()
+    var posts = Array<CTPost>()
     var keys = Array<String>()
     
     var bottomView: UIView!
     var messageField: UITextField!
+    
+    // MARK: - Lifecycle Methods
     
     required init?(coder aDecoder: NSCoder){
         super.init(coder: aDecoder)
@@ -71,7 +75,7 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
         btnSend.layer.borderColor = UIColor.darkGrayColor().CGColor
         btnSend.layer.borderWidth = 0.5
         self.bottomView.addSubview(btnSend)
-        btnSend.addTarget(self, action: #selector(CTChatViewController.postMessage(_:)), forControlEvents: .TouchUpInside)
+        btnSend.addTarget(self, action: #selector(CTChatViewController.postMessage), forControlEvents: .TouchUpInside)
         
         self.view = view
     }
@@ -84,56 +88,112 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
     override func viewWillAppear(animated: Bool) {
         print("viewWillAppear:")
         
-        UIView.animateWithDuration(0.5, animations: {
-            var bottomFrame = self.bottomView.frame
-            bottomFrame.origin.y = bottomFrame.origin.y-self.bottomView.frame.size.height
-            
-            self.bottomView.frame = bottomFrame
-        })
-        
         //Listen for new messages in the FB DB
         self._refHandle = self.firebase.child(self.place.id).observeEventType(.Value, withBlock: { (snapshot) -> Void in
             
             if let payload = snapshot.value as? Dictionary<String, AnyObject> {
                 
                 for key in payload.keys {
-                    let post = payload[key] as! Dictionary<String, AnyObject>
+                    let postInfo = payload[key] as! Dictionary<String, AnyObject>
 //                    print("POST == \(post)")
                     if(self.keys.contains(key)){
                         continue
                     }
                     
                     self.keys.append(key)
+                    let post = CTPost()
+                    post.id = key
+                    post.populate(postInfo)
                     self.posts.append(post)
                     
-                    dispatch_async(dispatch_get_main_queue(), {
-                        self.chatTable.reloadData()
-                    })
                 }
+                
+                print("\(self.posts.count) POSTS")
+                self.posts.sortInPlace{
+                    $0.timestamp.compare($1.timestamp) == .OrderedAscending
+                }
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.chatTable.reloadData()
+                })
             }
         })
     }
     
+    override func viewDidAppear(animated: Bool) {
+        print("viewDidAppear")
+        UIView.animateWithDuration(0.35,
+                                   delay: 0.25,
+                                   options: UIViewAnimationOptions.CurveLinear,
+                                   animations: {
+                                    var bottomFrame = self.bottomView.frame
+                                    bottomFrame.origin.y = bottomFrame.origin.y-self.bottomView.frame.size.height
+                                    self.bottomView.frame = bottomFrame
+            },
+                                   completion: nil)
+    }
     
     override func viewWillDisappear(animated: Bool) {
         self.firebase.removeObserverWithHandle(self._refHandle)
         
     }
     
-    func postMessage(btn: UIButton){
+    //Helper Methods
+    
+    func postMessage(){
         print("postMessage")
+        messageField.resignFirstResponder()
         
+        //Push data to Firebase Database
+        let timestamp = NSDate().timeIntervalSince1970
+        let post = [
+            "from": CTViewController.currentUser.id!,
+            "message":self.messageField.text!,
+            "timestamp": "\(timestamp)",
+            "place":self.place.id
+        ]
+        
+        self.firebase.child(self.place.id).childByAutoId().setValue(post)
+        
+        self.messageField.text = nil
+        self.shiftView(0)
+        
+    }
+    
+    func shiftView(position: CGFloat){
+        
+        if(self.view.frame.origin.y == position){
+            return
+        }
+        
+        UIView.animateWithDuration(0.25,
+                                   delay: 0,
+                                   options: .CurveEaseInOut,
+                                   animations: {
+                                    var frame = self.view.frame
+                                    frame.origin.y = position
+                                    self.view.frame = frame
+            },
+                                   completion: nil)
         
     }
     
     //MARK: - TextField Delegate
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-        print("textFieldShouldReturn: ")
+        
         messageField.resignFirstResponder()
+        
+        self.postMessage()
         return true
     }
     
-    //MARK: TableView Delegate
+    func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+        
+        self.shiftView(-270)
+        return true
+    }
+    
+    //MARK: - TableView Delegate
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.posts.count
@@ -144,7 +204,7 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
         let post = self.posts[indexPath.row]
         
         let cell = tableView.dequeueReusableCellWithIdentifier(CTChatTableViewCell.cellId, forIndexPath: indexPath)
-        cell.textLabel?.text = post["message"] as? String
+        cell.textLabel?.text = post.message
         return cell
         
     }
@@ -152,16 +212,16 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         print("didSelectRowAtIndexPath")
         
-        //Push data to Firebase Database
-        let timestamp = NSDate().timeIntervalSince1970
-        let post = [
-            "from": CTViewController.currentUser.id!,
-            "message":"this is a test - BC1",
-            "timestamp": "\(timestamp)",
-            "place":self.place.id
-        ]
-        
-        self.firebase.child(self.place.id).childByAutoId().setValue(post)
+//        //Push data to Firebase Database
+//        let timestamp = NSDate().timeIntervalSince1970
+//        let post = [
+//            "from": CTViewController.currentUser.id!,
+//            "message":"this is a test - BC1",
+//            "timestamp": "\(timestamp)",
+//            "place":self.place.id
+//        ]
+//        
+//        self.firebase.child(self.place.id).childByAutoId().setValue(post)
     }
 
     override func didReceiveMemoryWarning() {
