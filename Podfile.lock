@@ -1,5 +1,6 @@
 PODS:
   - Alamofire (3.4.0)
+  - Cloudinary (1.0.15)
   - Firebase (3.2.0):
     - Firebase/Core (= 3.2.0)
   - Firebase/Analytics (3.2.0):
@@ -25,11 +26,13 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire
+  - Cloudinary
   - Firebase
   - Firebase/Database
 
 SPEC CHECKSUMS:
   Alamofire: c19a627cefd6a95f840401c49ab1f124e07f54ee
+  Cloudinary: f80af4565ec08c521d5e58cb56d9fbe1e4595e40
   Firebase: 6d4012da1598732a2b43f16d8355eca90f94ed59
   FirebaseAnalytics: 6f75b04e6bfb8e0b6e9ef298e04c24eea3b13863
   FirebaseDatabase: 34301d11621a83546f39f670d256477ba6f7fcea
@@ -38,6 +41,6 @@ SPEC CHECKSUMS:
   GoogleSymbolUtilities: 33117db1b5f290c6fbf259585e4885b4c84b98d7
   GoogleUtilities: 56c5ac05b7aa5dc417a1bb85221a9516e04d7032
 
-PODFILE CHECKSUM: fef618dc99789cff43e6e407a9f626a979afd7a2
+PODFILE CHECKSUM: 0e387765487fc910d9bae331d96970194c28cc60
 
 COCOAPODS: 1.0.0

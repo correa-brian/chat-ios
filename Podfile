@@ -5,6 +5,7 @@ use_frameworks!
 target 'chat-ios' do
 
 pod 'Alamofire'
+pod 'Cloudinary'
 pod 'Firebase'
 pod 'Firebase/Database'
 
