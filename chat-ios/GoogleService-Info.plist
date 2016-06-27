@@ -7,21 +7,21 @@
 	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
 	<string>ca-app-pub-3940256099942544/4411468910</string>
 	<key>CLIENT_ID</key>
-	<string>444967935062-e2vqk3kr3hg1otksrula3o25if3j0o75.apps.googleusercontent.com</string>
+	<string>995542484593-27lqh770t7kjqo56t5gq2qt4660phe9u.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.444967935062-e2vqk3kr3hg1otksrula3o25if3j0o75</string>
+	<string>com.googleusercontent.apps.995542484593-27lqh770t7kjqo56t5gq2qt4660phe9u</string>
 	<key>API_KEY</key>
-	<string>AIzaSyAeRqVE8z2OGIg-xprwQBN3QBe0xFH9Q18</string>
+	<string>AIzaSyAhnvsr1iaK8e5dCCvjo-wB3E72JYvsfXE</string>
 	<key>GCM_SENDER_ID</key>
-	<string>444967935062</string>
+	<string>995542484593</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>io.velocity360.chat-ios</string>
 	<key>PROJECT_ID</key>
-	<string>velocity-chat-app</string>
+	<string>velocity-chat</string>
 	<key>STORAGE_BUCKET</key>
-	<string>velocity-chat-app.appspot.com</string>
+	<string>velocity-chat.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<true/>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -33,8 +33,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true/>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:444967935062:ios:7694bc6f64a06d34</string>
+	<string>1:995542484593:ios:7694bc6f64a06d34</string>
 	<key>DATABASE_URL</key>
-	<string>https://velocity-chat-app.firebaseio.com</string>
+	<string>https://velocity-chat.firebaseio.com</string>
 </dict>
 </plist>
