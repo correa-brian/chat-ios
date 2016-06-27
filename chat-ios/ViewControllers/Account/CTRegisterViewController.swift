@@ -93,7 +93,6 @@ class CTRegisterViewController: CTViewController, UITextFieldDelegate {
                                         self.navigationController?.pushViewController(accountVc, animated: true)
                                         
                                     })
-                                    
                                 }
 
             })
