@@ -8,8 +8,9 @@
 
 import UIKit
 import Firebase
+import Cloudinary
 
-class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, CLUploaderDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     //MARK: - Firebase Config:
     var firebase: FIRDatabaseReference! // establishes connection and maintains connection to DB
@@ -21,9 +22,9 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
     var chatTable: UITableView!
     var posts = Array<CTPost>()
     var keys = Array<String>()
-    
     var bottomView: UIView!
     var messageField: UITextField!
+    var selectedImage: UIImage?
     
     // MARK: - Lifecycle Methods
     required init?(coder aDecoder: NSCoder){
@@ -63,26 +64,33 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
         self.chatTable.registerClass(CTChatTableViewCell.classForCoder(), forCellReuseIdentifier: "cellId")
         view.addSubview(self.chatTable)
         
-        let height = CGFloat(44)
+        var height = CGFloat(44)
         let width = frame.size.width
         
         let y = frame.size.height //offscreen bounds; will animate in
         self.bottomView = UIView(frame: CGRect(x: 0, y: y, width: width, height: height))
         self.bottomView.autoresizingMask = .FlexibleTopMargin
-        self.bottomView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+        self.bottomView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.75)
         view.addSubview(bottomView)
         
         let padding = CGFloat(6)
         let btnWidth = CGFloat(80)
+        height = height-2*padding
         
-        self.messageField = UITextField(frame: CGRect(x: padding, y: padding, width: width-2*padding-btnWidth, height: height-2*padding))
+        let camerBtn = UIButton(type: .Custom)
+        camerBtn.frame = CGRect(x: padding, y: padding, width: height, height: height)
+        camerBtn.backgroundColor = .redColor()
+        camerBtn.addTarget(self, action: #selector(CTChatViewController.showCameraOptions(_:)), forControlEvents: .TouchUpInside)
+        self.bottomView.addSubview(camerBtn)
+        
+        self.messageField = UITextField(frame: CGRect(x: padding+40, y: padding, width: width-2*padding-btnWidth-40, height: height))
         self.messageField.borderStyle = .RoundedRect
         self.messageField.placeholder = "Post a Message"
         self.messageField.delegate = self
         self.bottomView.addSubview(self.messageField)
         
         let btnSend = UIButton(type: .Custom)
-        btnSend.frame = CGRect(x: width-btnWidth, y: padding, width: 74, height: height-2*padding)
+        btnSend.frame = CGRect(x: width-btnWidth, y: padding, width: 74, height: height)
         btnSend.setTitle("Send", forState: .Normal)
         btnSend.backgroundColor = UIColor.lightGrayColor()
         btnSend.layer.cornerRadius = 5
@@ -102,6 +110,10 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
     
     override func viewWillAppear(animated: Bool) {
         print("viewWillAppear:")
+        
+        if(self._refHandle != nil){
+            return
+        }
         
         //Listen for new messages in the FB DB
         self._refHandle = self.firebase.child(self.place.id).queryLimitedToLast(25).observeEventType(.Value, withBlock: { (snapshot) -> Void in
@@ -137,6 +149,14 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
     
     override func viewDidAppear(animated: Bool) {
         print("viewDidAppear")
+        
+        //already on screen
+        let bottomFrame = self.bottomView.frame
+        if(bottomFrame.origin.y < self.view.frame.size.height){
+            return
+        }
+        
+        
         UIView.animateWithDuration(0.35,
                                    delay: 0.25,
                                    options: UIViewAnimationOptions.CurveLinear,
@@ -153,25 +173,128 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
         
     }
     
-    //Helper Methods
+    //MARK: - Camera ActionSheet
     
-    func postMessage(){
-        print("postMessage")
-        messageField.resignFirstResponder()
+    func showCameraOptions(btn: UIButton){
+        print("showCameraOptions: ")
         
-        //Push data to Firebase Database
-        let timestamp = NSDate().timeIntervalSince1970
-        let post = [
+        let actionSheet = UIAlertController(title: "Photo", message: "Select Source", preferredStyle: .ActionSheet)
+        
+        actionSheet.addAction(UIAlertAction(title: "Camera", style: .Default, handler: { action in
+            print("Select Camera: \(action.title!)")
+            dispatch_async(dispatch_get_main_queue(), {
+                self.launchPhotoPicker(.Camera)
+            })
+        }))
+        
+        actionSheet.addAction(UIAlertAction(title: "Photo Library", style: .Default, handler: { action in
+            print("Photo Library: \(action.title!)")
+            
+            dispatch_async(dispatch_get_main_queue(), {
+                self.launchPhotoPicker(.PhotoLibrary)
+            })
+        }))
+        
+        self.presentViewController(actionSheet, animated: true, completion: nil)
+    }
+    
+    func launchPhotoPicker(soureType: UIImagePickerControllerSourceType){
+        let imagePicker = UIImagePickerController()
+        imagePicker.sourceType = soureType
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = true
+        self.presentViewController(imagePicker, animated: true, completion: nil)
+    }
+    
+    //MARK: - Image Processing
+    
+    func uploadImage(){
+        if(self.selectedImage == nil){
+            return
+        }
+        
+        print("uploadImage: ")
+        
+        //CLOUDINARY_URL=cloudinary://317483526839272:LyZuryF3e_Ny9GcNwAlj_2j4bAU@hltq8e6fy
+        
+        let clouder = CLCloudinary(url:"cloudinary://317483526839272:LyZuryF3e_Ny9GcNwAlj_2j4bAU@hltq8e6fy")
+        let forUpload = UIImageJPEGRepresentation(self.selectedImage!, 0.5)
+        
+        let uploader = CLUploader(clouder, delegate: self)
+        
+        uploader.upload(forUpload, options: nil,
+                        
+                        withCompletion: { (dataDictionary: [NSObject: AnyObject]!, errorResult:String!, code:Int, context: AnyObject!) -> Void in
+                            
+                            print("Upload Response: \(dataDictionary)")
+                            
+                            // self.uploadResponse = Mapper<ImageUploadResponse>().map(dataDictionary)
+                            
+                            // if code < 400 { onCompletion(status: true, url: self.uploadResponse?.imageURL)}
+                            
+                            // else {onCompletion(status: false, url: nil)}
+                            
+                            dispatch_async(dispatch_get_main_queue(),{
+                                self.selectedImage = nil
+                                var imageUrl = ""
+                                if let secure_url = dataDictionary["secure_url"] as? String{
+                                    imageUrl = secure_url
+                                }
+                                
+                                self.postMessageDict(self.preparePostInfo(imageUrl))
+                            })
+                            
+            },
+                        andProgress: { (bytesWritten:Int, totalBytesWritten:Int, totalBytesExpectedToWrite:Int, context:AnyObject!) -> Void in
+                            
+                            print("Upload progress: \((totalBytesWritten * 100)/totalBytesExpectedToWrite) %");
+            }
+        )
+    }
+    
+    func preparePostInfo(imageUrl: String) -> Dictionary<String, AnyObject>{
+        let postInfo = [
             "from": CTViewController.currentUser.id!,
             "message":self.messageField.text!,
-            "timestamp": "\(timestamp)",
-            "place":self.place.id
+            "timestamp": "\(NSDate().timeIntervalSince1970)",
+            "place":self.place.id,
+            "image": imageUrl
         ]
-        
-        self.firebase.child(self.place.id).childByAutoId().setValue(post)
-        
-        self.messageField.text = nil
+        return postInfo
+    }
     
+    func postMessage(){
+        self.postMessageDict(self.preparePostInfo(""))
+    }
+    
+    func postMessageDict(postInfo: Dictionary<String, AnyObject>) {
+        
+        self.messageField.resignFirstResponder()
+        self.messageField.text = nil
+        
+        if (self.selectedImage != nil){ //upload image first
+            self.uploadImage()
+            return
+        }
+        
+        //Push Data to Firebase Database
+        self.firebase.child(self.place.id).childByAutoId().setValue(postInfo)
+    }
+    
+    //MARK: UIImagePickerControllerDelegate
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String: AnyObject]){
+        print("didFinishPickingMediaWithInfo: \(info)")
+        
+        if let image = info[UIImagePickerControllerEditedImage] as? UIImage{
+            self.selectedImage = image
+        }
+        
+        picker.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(picker: UIImagePickerController){
+        picker.dismissViewControllerAnimated(true, completion: nil)
     }
     
     //MARK - KeyboardNotifcations:
@@ -195,9 +318,7 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
     //MARK: - TextField Delegate
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         
-        messageField.resignFirstResponder()
-        
-        self.postMessage()
+        self.postMessageDict(self.preparePostInfo(""))
         return true
     }
     
@@ -224,16 +345,6 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         print("didSelectRowAtIndexPath")
         
-//        //Push data to Firebase Database
-//        let timestamp = NSDate().timeIntervalSince1970
-//        let post = [
-//            "from": CTViewController.currentUser.id!,
-//            "message":"this is a test - BC1",
-//            "timestamp": "\(timestamp)",
-//            "place":self.place.id
-//        ]
-//        
-//        self.firebase.child(self.place.id).childByAutoId().setValue(post)
     }
 
     override func didReceiveMemoryWarning() {
