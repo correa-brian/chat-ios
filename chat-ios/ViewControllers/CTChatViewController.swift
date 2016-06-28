@@ -25,6 +25,7 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
     var bottomView: UIView!
     var messageField: UITextField!
     var selectedImage: UIImage?
+    var cameraBtn: UIButton!
     
     // MARK: - Lifecycle Methods
     required init?(coder aDecoder: NSCoder){
@@ -75,13 +76,15 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
         
         let padding = CGFloat(6)
         let btnWidth = CGFloat(80)
-        height = height-2*padding
+
         
-        let camerBtn = UIButton(type: .Custom)
-        camerBtn.frame = CGRect(x: padding, y: padding, width: height, height: height)
-        camerBtn.backgroundColor = .redColor()
-        camerBtn.addTarget(self, action: #selector(CTChatViewController.showCameraOptions(_:)), forControlEvents: .TouchUpInside)
-        self.bottomView.addSubview(camerBtn)
+        self.cameraBtn = UIButton(type: .Custom)
+        self.cameraBtn.frame = CGRect(x: 0, y: 0, width: height, height: height)
+        self.cameraBtn.backgroundColor = .redColor()
+        self.cameraBtn.addTarget(self, action: #selector(CTChatViewController.showCameraOptions(_:)), forControlEvents: .TouchUpInside)
+        self.bottomView.addSubview(self.cameraBtn)
+        
+        height = height-2*padding
         
         self.messageField = UITextField(frame: CGRect(x: padding+40, y: padding, width: width-2*padding-btnWidth-40, height: height))
         self.messageField.borderStyle = .RoundedRect
@@ -173,6 +176,15 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
         
     }
     
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        
+        dispatch_async(dispatch_get_main_queue(), {
+            let post = object as! CTPost
+            post.removeObserver(self, forKeyPath: "imageData")
+            self.chatTable.reloadData()
+        })
+    }
+    
     //MARK: - Camera ActionSheet
     
     func showCameraOptions(btn: UIButton){
@@ -192,6 +204,29 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
             
             dispatch_async(dispatch_get_main_queue(), {
                 self.launchPhotoPicker(.PhotoLibrary)
+            })
+        }))
+        
+        if (self.selectedImage == nil){
+            self.presentViewController(actionSheet, animated: true, completion: nil)
+            return
+        }
+        
+        actionSheet.addAction(UIAlertAction(title: "Remove Image", style: .Default, handler: { action in
+            
+            dispatch_async(dispatch_get_main_queue(), {
+                self.selectedImage = nil
+                self.cameraBtn.setImage(nil, forState: .Normal)
+                
+                UIView.transitionWithView(
+                    self.cameraBtn,
+                    duration: 0.3,
+                    options: UIViewAnimationOptions.TransitionFlipFromLeft,
+                    animations: {
+                        self.cameraBtn.setImage(nil, forState: .Normal)
+                    },
+                    
+                    completion: nil)
             })
         }))
         
@@ -290,7 +325,18 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
             self.selectedImage = image
         }
         
-        picker.dismissViewControllerAnimated(true, completion: nil)
+        picker.dismissViewControllerAnimated(true, completion: {
+            UIView.transitionWithView(
+                self.cameraBtn,
+                duration: 0.3,
+                options: UIViewAnimationOptions.TransitionFlipFromLeft,
+                animations: {
+                    self.cameraBtn.setImage(self.selectedImage, forState: .Normal)
+                    self.cameraBtn.alpha = 1.0
+                },
+                
+                completion: nil)
+        })
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController){
@@ -339,6 +385,19 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
         let cell = tableView.dequeueReusableCellWithIdentifier(CTChatTableViewCell.cellId, forIndexPath: indexPath) as! CTChatTableViewCell
         cell.messageLabel.text = post.message
         cell.dateLabel.text = post.formattedDate
+        
+        
+        if(post.image.characters.count == 0){
+            return cell
+        }
+        
+        if(post.imageData != nil){
+            cell.imageView?.image = post.imageData
+            return cell
+        }
+        
+        post.addObserver(self, forKeyPath: "imageData", options: .Initial, context: nil)
+        post.fetchImage()
         return cell
     }
     
