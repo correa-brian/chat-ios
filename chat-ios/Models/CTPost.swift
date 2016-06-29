@@ -15,16 +15,33 @@ class CTPost: NSObject {
     var message: String!
     var place: String!
     var from: String!
-    var image: String!
-    var imageData: UIImage?
-    var isFetching = false
     var timestamp: NSDate!
     var formattedDate: String!
-
+    
+    //Images:
+    var image: Dictionary<String,AnyObject>!
+    var thumbnailUrl: String!
+    var thumbnailData: UIImage?
+    var imageUrl: String!
+    var imageData: UIImage?
+    var isFetching = false
+    
+    
     func populate(postInfo: Dictionary<String, AnyObject!>){
-        let keys = ["message", "place", "from", "image"]
+        let keys = ["message", "place", "from"]
         for key in keys {
             self.setValue(postInfo[key], forKey: key)
+        }
+        
+        //Image Strings:
+        if let _image = postInfo["image"] as? Dictionary<String, AnyObject>{
+            if let _original = _image["original"] as? String {
+                self.imageUrl = _original
+            }
+            
+            if let _thumb = _image["thumb"] as? String {
+                self.thumbnailUrl = _thumb
+            }
         }
         
         if let _timestamp = postInfo["timestamp"] as? String {
@@ -34,13 +51,41 @@ class CTPost: NSObject {
             print("DATE: \(self.timestamp)")
             
             let dateFormatter = NSDateFormatter()
-            dateFormatter.dateFormat = "MMM dd, yyyy" // "May 16, 2015"
+            dateFormatter.dateFormat = "MMMM dd, yyyy" // "May 16, 2015"
             self.formattedDate = dateFormatter.stringFromDate(self.timestamp)
         }
     }
     
+    func fetchThumbnail(){
+        
+        if (self.thumbnailUrl.characters.count == 0){
+            return
+        }
+        
+        if(self.thumbnailData != nil){
+            return
+        }
+        
+        if (self.isFetching == true){
+            return
+        }
+        
+        self.isFetching = true
+        Alamofire.request(.GET, self.thumbnailUrl, parameters: nil).response { (req, res, data, error) in
+            self.isFetching = false
+            if (error != nil){
+                return
+            }
+            
+            if let img = UIImage(data: data!){
+                self.thumbnailData = img
+            }
+        }
+        
+    }
+    
     func fetchImage(){
-        if(self.image.characters.count == 0){
+        if(self.imageUrl.characters.count == 0){
             return
         }
         
@@ -53,7 +98,7 @@ class CTPost: NSObject {
         }
         self.isFetching = true
         
-        Alamofire.request(.GET, self.image, parameters: nil).response { (req, res, data, error) in
+        Alamofire.request(.GET, self.imageUrl, parameters: nil).response { (req, res, data, error) in
             self.isFetching = false
             if (error != nil){
                 return
