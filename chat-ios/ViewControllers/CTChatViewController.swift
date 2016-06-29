@@ -26,6 +26,7 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
     var messageField: UITextField!
     var selectedImage: UIImage?
     var cameraBtn: UIButton!
+    var loaded = false
     
     // MARK: - Lifecycle Methods
     required init?(coder aDecoder: NSCoder){
@@ -62,36 +63,41 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
         self.chatTable = UITableView(frame: frame, style: .Plain)
         self.chatTable.dataSource = self
         self.chatTable.delegate = self
+        self.chatTable.showsVerticalScrollIndicator = false
+        self.chatTable.contentInset = UIEdgeInsetsMake(0, 0, 44, 0)
+        self.chatTable.separatorStyle = .None
         self.chatTable.registerClass(CTChatTableViewCell.classForCoder(), forCellReuseIdentifier: "cellId")
         view.addSubview(self.chatTable)
         
-        var height = CGFloat(44)
+        var height = self.chatTable.contentInset.bottom
         let width = frame.size.width
         
         let y = frame.size.height //offscreen bounds; will animate in
         self.bottomView = UIView(frame: CGRect(x: 0, y: y, width: width, height: height))
         self.bottomView.autoresizingMask = .FlexibleTopMargin
-        self.bottomView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.75)
+        self.bottomView.backgroundColor = UIColor(red: 0.86, green: 0.86, blue: 0.86, alpha: 0.5)
         view.addSubview(bottomView)
         
         let padding = CGFloat(6)
         let btnWidth = CGFloat(80)
-
         
         self.cameraBtn = UIButton(type: .Custom)
         self.cameraBtn.frame = CGRect(x: 0, y: 0, width: height, height: height)
-        self.cameraBtn.backgroundColor = .redColor()
+        self.cameraBtn.backgroundColor = .clearColor()
+        self.cameraBtn.setImage(UIImage(named: "camera-icon.png"), forState: .Normal)
         self.cameraBtn.addTarget(self, action: #selector(CTChatViewController.showCameraOptions(_:)), forControlEvents: .TouchUpInside)
         self.bottomView.addSubview(self.cameraBtn)
         
+        // Message TextField
         height = height-2*padding
-        
         self.messageField = UITextField(frame: CGRect(x: padding+40, y: padding, width: width-2*padding-btnWidth-40, height: height))
         self.messageField.borderStyle = .RoundedRect
         self.messageField.placeholder = "Post a Message"
         self.messageField.delegate = self
         self.bottomView.addSubview(self.messageField)
         
+        
+        //Send Button
         let btnSend = UIButton(type: .Custom)
         btnSend.frame = CGRect(x: width-btnWidth, y: padding, width: 74, height: height)
         btnSend.setTitle("Send", forState: .Normal)
@@ -108,6 +114,7 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.configureCustomBackButton()
         self.firebase = FIRDatabase.database().reference() // initialize FB manager
     }
     
@@ -145,6 +152,16 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
                 
                 dispatch_async(dispatch_get_main_queue(), {
                     self.chatTable.reloadData()
+                    
+                    let lastIndexPath = NSIndexPath(forItem: self.posts.count-1, inSection: 0)
+                    
+                    self.chatTable.scrollToRowAtIndexPath(
+                        lastIndexPath,
+                        atScrollPosition: .Top,
+                        animated: self.loaded
+                    )
+                    
+                    self.loaded = true
                 })
             }
         })
@@ -152,7 +169,7 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
     
     override func viewDidAppear(animated: Bool) {
         print("viewDidAppear")
-        
+ 
         //already on screen
         let bottomFrame = self.bottomView.frame
         if(bottomFrame.origin.y < self.view.frame.size.height){
@@ -180,7 +197,7 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
         
         dispatch_async(dispatch_get_main_queue(), {
             let post = object as! CTPost
-            post.removeObserver(self, forKeyPath: "imageData")
+            post.removeObserver(self, forKeyPath: "thumbnailData")
             self.chatTable.reloadData()
         })
     }
@@ -223,7 +240,7 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
                     duration: 0.3,
                     options: UIViewAnimationOptions.TransitionFlipFromLeft,
                     animations: {
-                        self.cameraBtn.setImage(nil, forState: .Normal)
+                    self.cameraBtn.setImage(UIImage(named: "camera-icon.png"), forState: .Normal)
                     },
                     
                     completion: nil)
@@ -271,12 +288,24 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
                             
                             dispatch_async(dispatch_get_main_queue(),{
                                 self.selectedImage = nil
+                                
+                                //https://res.cloudinary.com/hltq8e6fy/image/upload/v1467130421/rrgs3vusdsn0mdek8d80.jpg
+                                
                                 var imageUrl = ""
                                 if let secure_url = dataDictionary["secure_url"] as? String{
                                     imageUrl = secure_url
                                 }
                                 
-                                self.postMessageDict(self.preparePostInfo(imageUrl))
+                                //https://res.cloudinary.com/hltq8e6fy/image/upload/t_thumb_250/v1467130421/rrgs3vusdsn0mdek8d80.jpg
+                                
+                                let thumbnailUrl = imageUrl.stringByReplacingOccurrencesOfString("/upload/", withString: "/upload/t_thumb_250/")
+                                
+                                let imageInfo = [
+                                    "original": imageUrl,
+                                    "thumb": thumbnailUrl
+                                ]
+                                
+                                self.postMessageDict(self.preparePostInfo(imageInfo))
                             })
                             
             },
@@ -287,30 +316,43 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
         )
     }
     
-    func preparePostInfo(imageUrl: String) -> Dictionary<String, AnyObject>{
-        let postInfo = [
-            "from": CTViewController.currentUser.id!,
-            "message":self.messageField.text!,
-            "timestamp": "\(NSDate().timeIntervalSince1970)",
-            "place":self.place.id,
-            "image": imageUrl
-        ]
+    func preparePostInfo(imageInfo: Dictionary<String, AnyObject>) -> Dictionary<String, AnyObject>{
+        var postInfo = Dictionary<String, AnyObject>()
+        postInfo["from"] = CTViewController.currentUser.id!
+        postInfo["message"] = self.messageField.text!
+        postInfo["timestamp"] = "\(NSDate().timeIntervalSince1970)"
+        postInfo["place"] = self.place.id
+        postInfo["image"] = imageInfo
         return postInfo
     }
     
     func postMessage(){
-        self.postMessageDict(self.preparePostInfo(""))
+        let loggedIn = self.checkLoggedIn()
+        if(loggedIn == false){
+            return
+        }
+        
+        let imageInfo = ["original": "", "thumb": ""]
+        self.postMessageDict(self.preparePostInfo(imageInfo))
     }
     
     func postMessageDict(postInfo: Dictionary<String, AnyObject>) {
-        
         self.messageField.resignFirstResponder()
-        self.messageField.text = nil
         
         if (self.selectedImage != nil){ //upload image first
             self.uploadImage()
             return
         }
+        
+        self.messageField.text = ""
+        UIView.transitionWithView(
+            self.cameraBtn,
+            duration: 0.3,
+            options: UIViewAnimationOptions.TransitionFlipFromLeft,
+            animations: {
+                self.cameraBtn.setImage(UIImage(named: "camera-icon.png"), forState: .Normal)
+                self.cameraBtn.alpha = 1
+            }, completion: nil)
         
         //Push Data to Firebase Database
         self.firebase.child(self.place.id).childByAutoId().setValue(postInfo)
@@ -343,7 +385,7 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
         picker.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    //MARK - KeyboardNotifcations:
+    //MARK: - KeyboardNotifcations:
     
     func shiftKeyboardUp(notification: NSNotification){
         if let keyboardFrame = notification.userInfo![UIKeyboardFrameEndUserInfoKey]?.CGRectValue() {
@@ -352,6 +394,10 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
             var frame = self.bottomView.frame
             frame.origin.y = keyboardFrame.origin.y-frame.size.height
             self.bottomView.frame = frame
+            
+            frame = self.chatTable.frame
+            frame.origin.y = -keyboardFrame.size.height
+            self.chatTable.frame = frame
         }
     }
     
@@ -359,12 +405,23 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
         var frame = self.bottomView.frame
         frame.origin.y = self.view.frame.size.height-frame.size.height
         self.bottomView.frame = frame
+        
+        frame = self.chatTable.frame
+        frame.origin.y = 0
+        self.chatTable.frame = frame
     }
     
     //MARK: - TextField Delegate
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         
-        self.postMessageDict(self.preparePostInfo(""))
+        let loggedIn = self.checkLoggedIn()
+        if(loggedIn == false){
+            return false
+        }
+        
+        let imageInfo = ["original":"", "thumb":""]
+        
+        self.postMessageDict(self.preparePostInfo(imageInfo))
         return true
     }
     
@@ -381,24 +438,27 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let post = self.posts[indexPath.row]
-        
         let cell = tableView.dequeueReusableCellWithIdentifier(CTChatTableViewCell.cellId, forIndexPath: indexPath) as! CTChatTableViewCell
         cell.messageLabel.text = post.message
         cell.dateLabel.text = post.formattedDate
         
-        
-        if(post.image.characters.count == 0){
+        if(post.thumbnailUrl.characters.count == 0){
+            cell.thumbnail.image = nil
             return cell
         }
         
-        if(post.imageData != nil){
-            cell.imageView?.image = post.imageData
+        if(post.thumbnailData != nil){
+            cell.thumbnail.image = post.thumbnailData
             return cell
         }
         
-        post.addObserver(self, forKeyPath: "imageData", options: .Initial, context: nil)
-        post.fetchImage()
+        post.addObserver(self, forKeyPath: "thumbnailData", options: .Initial, context: nil)
+        post.fetchThumbnail()
         return cell
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return CTChatTableViewCell.defaultHeight
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
