@@ -26,7 +26,8 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         
         edgesForExtendedLayout = .None
-        self.title = "Map"
+        self.title = ""
+        self.tabBarItem.title = "Map"
         self.tabBarItem.image = UIImage(named: "globe-icon.png")
         
         let notificationCenter = NSNotificationCenter.defaultCenter()
