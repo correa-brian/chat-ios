@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D306D42A1D22F753006166D6 /* camera-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D306D4291D22F753006166D6 /* camera-icon@2x.png */; };
+		D306D42C1D244F98006166D6 /* logo-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D306D42B1D244F98006166D6 /* logo-icon@2x.png */; };
+		D306D42E1D245437006166D6 /* cancel_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D306D42D1D245437006166D6 /* cancel_icon@2x.png */; };
+		D306D4301D246A3B006166D6 /* back_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D306D42F1D246A3B006166D6 /* back_icon@2x.png */; };
+		D306D4321D2474AD006166D6 /* pencil_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D306D4311D2474AD006166D6 /* pencil_icon@2x.png */; };
 		D32EAE681D21B3900020D7FF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D32EAE671D21B3900020D7FF /* GoogleService-Info.plist */; };
 		D33DF9651D107E6C001E8E27 /* CTButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33DF9641D107E6C001E8E27 /* CTButton.swift */; };
 		D33DF9671D1083EC001E8E27 /* CTCreatePlaceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33DF9661D1083EC001E8E27 /* CTCreatePlaceViewController.swift */; };
@@ -34,6 +39,11 @@
 /* Begin PBXFileReference section */
 		1513F17978FA71899B100C23 /* Pods-chat-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-chat-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-chat-ios/Pods-chat-ios.debug.xcconfig"; sourceTree = "<group>"; };
 		3DDAB3F30FA38B58D3FB0FC5 /* Pods-chat-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-chat-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-chat-ios/Pods-chat-ios.release.xcconfig"; sourceTree = "<group>"; };
+		D306D4291D22F753006166D6 /* camera-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "camera-icon@2x.png"; sourceTree = "<group>"; };
+		D306D42B1D244F98006166D6 /* logo-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-icon@2x.png"; sourceTree = "<group>"; };
+		D306D42D1D245437006166D6 /* cancel_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cancel_icon@2x.png"; sourceTree = "<group>"; };
+		D306D42F1D246A3B006166D6 /* back_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back_icon@2x.png"; sourceTree = "<group>"; };
+		D306D4311D2474AD006166D6 /* pencil_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pencil_icon@2x.png"; sourceTree = "<group>"; };
 		D32EAE671D21B3900020D7FF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D33DF9641D107E6C001E8E27 /* CTButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTButton.swift; sourceTree = "<group>"; };
 		D33DF9661D1083EC001E8E27 /* CTCreatePlaceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTCreatePlaceViewController.swift; sourceTree = "<group>"; };
@@ -179,6 +189,11 @@
 			isa = PBXGroup;
 			children = (
 				D3B873F01D09D27D00BD0FAF /* globe-icon@2x.png */,
+				D306D42F1D246A3B006166D6 /* back_icon@2x.png */,
+				D306D4291D22F753006166D6 /* camera-icon@2x.png */,
+				D306D4311D2474AD006166D6 /* pencil_icon@2x.png */,
+				D306D42D1D245437006166D6 /* cancel_icon@2x.png */,
+				D306D42B1D244F98006166D6 /* logo-icon@2x.png */,
 				D3B873F41D09D35C00BD0FAF /* profile-icon@2x.png */,
 			);
 			path = Images;
@@ -246,10 +261,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D306D4321D2474AD006166D6 /* pencil_icon@2x.png in Resources */,
 				D3B725FA1D073EA2003C3AC6 /* LaunchScreen.storyboard in Resources */,
 				D3B873F11D09D27D00BD0FAF /* globe-icon@2x.png in Resources */,
+				D306D42C1D244F98006166D6 /* logo-icon@2x.png in Resources */,
 				D32EAE681D21B3900020D7FF /* GoogleService-Info.plist in Resources */,
 				D3B725F71D073EA2003C3AC6 /* Assets.xcassets in Resources */,
+				D306D4301D246A3B006166D6 /* back_icon@2x.png in Resources */,
+				D306D42E1D245437006166D6 /* cancel_icon@2x.png in Resources */,
+				D306D42A1D22F753006166D6 /* camera-icon@2x.png in Resources */,
 				D3B873F51D09D35C00BD0FAF /* profile-icon@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
