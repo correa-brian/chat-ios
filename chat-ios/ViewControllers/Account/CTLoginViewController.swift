@@ -43,7 +43,12 @@ class CTLoginViewController: CTViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        if(self.navigationItem.leftBarButtonItem != nil){
+            self.navigationItem.hidesBackButton = true
+            return
+        }
+        
+        self.configureCustomBackButton()
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
@@ -108,12 +113,16 @@ class CTLoginViewController: CTViewController, UITextFieldDelegate {
                                         
                                         dispatch_async(dispatch_get_main_queue(), {
                                             self.postLoggedInNotification(result)
-                                            let accountVc = CTAccountViewController()
-                                            self.navigationController?.pushViewController(accountVc, animated: true)
+                                            
+                                            if(self.navigationItem.leftBarButtonItem == nil){
+                                                let accountVc = CTAccountViewController()
+                                                self.navigationController?.pushViewController(accountVc, animated: true)
+                                            }
+                                            else{
+                                                self.exit()
+                                            }
                                         })
-
                                     }
-                                    
             })
             
             return true

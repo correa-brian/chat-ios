@@ -25,7 +25,7 @@ class CTCreatePlaceViewController: CTViewController, UITextFieldDelegate, UIPick
         btnCancel.setTitle("Cancel", forState: .Normal)
         btnCancel.setTitleColor(.whiteColor(), forState: .Normal)
         btnCancel.addTarget(self,
-                            action: #selector(CTCreatePlaceViewController.exit),
+                            action: #selector(CTViewController.exit),
                             forControlEvents: .TouchUpInside)
         view.addSubview(btnCancel)
         
@@ -99,11 +99,6 @@ class CTCreatePlaceViewController: CTViewController, UITextFieldDelegate, UIPick
     }
     
     //MARK: - Custom Functions
-    
-    func exit(){
-        print("exit")
-        self.dismissViewControllerAnimated(true, completion: nil)
-    }
     
     func dismissKeyboard(){
         

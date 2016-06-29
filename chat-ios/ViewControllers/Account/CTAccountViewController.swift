@@ -11,77 +11,66 @@ import UIKit
 class CTAccountViewController: CTViewController {
     
     var loginButtons = Array<UIButton>()
+    var showsBackButton = false
     
-    required init?(coder aDecoder: NSCoder){
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?){
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        self.title = "Account"
+        self.title = ""
+        self.tabBarItem.title = "Acount"
         self.tabBarItem.image = UIImage(named: "profile-icon.png")
     }
-
+    
     override func loadView() {
         let frame = UIScreen.mainScreen().bounds
         let view = UIView(frame: frame)
-        view.backgroundColor = UIColor.redColor()
+        view.backgroundColor = .blueColor()
+        
         
         if (CTViewController.currentUser.id == nil){ // not logged in
-            self.loadSignUpView(frame, view: view)
+            self.loadSignupView(frame, view: view)
         }
-        else{ //logged in
+            
+        else { // logged in
             self.loadAccountView(frame, view: view)
         }
         
-//        let btnSignUp = UIButton(type: .Custom)
-//        btnSignUp.frame = CGRect(x: padding, y: 0, width: width, height: 44)
-//        btnSignUp.center = CGPointMake(0.5*frame.size.width, 0.4*frame.size.height)
-//        btnSignUp.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.65)
-//        btnSignUp.layer.cornerRadius = 22
-//        btnSignUp.layer.borderWidth = 2
-//        btnSignUp.layer.borderColor = UIColor.whiteColor().CGColor
-//        btnSignUp.setTitle("Sign Up", forState: .Normal)
-//        btnSignUp.setTitleColor(.whiteColor(), forState: .Normal)
-//        btnSignUp.titleLabel?.font = UIFont(name: "Heiti SC", size: 18)
-//        view.addSubview(btnSignUp)
-//        
-//        let btnLogin = UIButton(type: .Custom)
-//        btnLogin.frame = CGRect(x: padding, y: 0, width: width, height: 44)
-//        btnLogin.center = CGPointMake(0.5*frame.size.width, 0.6*frame.size.height)
-//        btnLogin.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.65)
-//        btnLogin.layer.cornerRadius = 22
-//        btnLogin.layer.borderWidth = 2
-//        btnLogin.layer.borderColor = UIColor.whiteColor().CGColor
-//        btnLogin.setTitle("Login", forState: .Normal)
-//        btnLogin.setTitleColor(.whiteColor(), forState: .Normal)
-//        btnLogin.titleLabel?.font = UIFont(name: "Heiti SC", size: 18)
-//        view.addSubview(btnLogin)
-        
-        
         self.view = view
+        
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationItem.hidesBackButton = true
-        
+        self.navigationItem.hidesBackButton = !self.showsBackButton
+        if (self.showsBackButton){
+            
+            let btnCancel = UIButton(type: .Custom)
+            let cancelIcon = UIImage(named: "cancel_icon.png")!
+            btnCancel.setImage(cancelIcon, forState: .Normal)
+            
+            btnCancel.frame = CGRect(x: 0, y: 0, width: cancelIcon.size.width, height: cancelIcon.size.height)
+            
+            btnCancel.addTarget(self, action: #selector(CTAccountViewController.exit), forControlEvents: .TouchUpInside)
+            self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: btnCancel)
+        }
     }
     
     func loadAccountView(frame: CGRect, view: UIView){
-
         let padding = CGFloat(Constants.padding)
         let width = frame.size.width-2*padding
         let y = CGFloat(Constants.origin_y)
         
         let nameLabel = UILabel(frame: CGRect(x: padding, y: y, width: width, height: 22))
-        nameLabel.text = CTViewController.currentUser.email //change to username
+        nameLabel.text = CTViewController.currentUser.email
+        nameLabel.textColor = UIColor.whiteColor()
         view.addSubview(nameLabel)
-
     }
     
-    func loadSignUpView(frame: CGRect, view: UIView){
+    func loadSignupView(frame: CGRect, view: UIView){
         
         let padding = CGFloat(Constants.padding)
         let width = frame.size.width-2*padding
@@ -93,9 +82,9 @@ class CTAccountViewController: CTViewController {
             let btn = CTButton(frame: CGRect(x: padding, y: y, width: width, height: height))
             btn.setTitle(btnTitle, forState: .Normal)
             btn.addTarget(self, action: #selector(CTAccountViewController.buttonTapped(_:)), forControlEvents: .TouchUpInside)
-            view.addSubview(btn)
             self.loginButtons.append(btn)
-            y += height + padding
+            view.addSubview(btn)
+            y += height+padding
         }
         
     }
@@ -104,33 +93,32 @@ class CTAccountViewController: CTViewController {
         let buttonTitle = btn.titleLabel?.text?.lowercaseString
         print("buttonTapped: \(buttonTitle!)")
         
-        if(buttonTitle == "sign up"){
+        if (buttonTitle == "sign up"){
             let registerVc = CTRegisterViewController()
+            registerVc.navigationItem.leftBarButtonItem = self.navigationItem.leftBarButtonItem
             self.navigationController?.pushViewController(registerVc, animated: true)
         }
         
-        if(buttonTitle == "login"){
+        if (buttonTitle == "login"){
             let loginVc = CTLoginViewController()
+            loginVc.navigationItem.leftBarButtonItem = self.navigationItem.leftBarButtonItem
             self.navigationController?.pushViewController(loginVc, animated: true)
         }
     }
     
     override func userLoggedIn(notification: NSNotification){
         super.userLoggedIn(notification)
-        
-        if(CTViewController.currentUser.id == nil){
+        if (CTViewController.currentUser.id == nil){
             return
         }
         
         for btn in self.loginButtons{
             btn.alpha = 0
         }
-        
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        
     }
     
 }
