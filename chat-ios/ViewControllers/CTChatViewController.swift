@@ -114,6 +114,7 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.place.visited = true
         self.configureCustomBackButton()
         self.firebase = FIRDatabase.database().reference() // initialize FB manager
     }
@@ -337,14 +338,33 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
     }
     
     func postMessageDict(postInfo: Dictionary<String, AnyObject>) {
+        
+        let message = postInfo["messsage"] as! String
+        if(message.characters.count == 0){
+            print("empty message")
+            let alert = UIAlertController(
+            title: "No Message",
+            message: "Please enter a message",
+            preferredStyle: .Alert
+            )
+            
+            alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: { action in
+                
+                
+            }))
+            self.presentViewController(alert, animated: true, completion: nil)
+            return
+    
+        }
+        
         self.messageField.resignFirstResponder()
+        self.messageField.text = ""
         
         if (self.selectedImage != nil){ //upload image first
             self.uploadImage()
             return
         }
         
-        self.messageField.text = ""
         UIView.transitionWithView(
             self.cameraBtn,
             duration: 0.3,

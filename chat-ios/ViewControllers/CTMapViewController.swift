@@ -17,6 +17,9 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
     var places = Array<CTPlace>()
     var btnCreatePlace: UIButton!
     var currentLocation: CLLocation?
+    var darkOverlay: UIView!
+    var selectedPlace: CTPlace?
+    var passwordField: UITextField!
     
     required init?(coder aDecoder: NSCoder){
         super.init(coder: aDecoder)
@@ -60,6 +63,40 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
         self.btnCreatePlace.alpha = 0 //initially hidden
         view.addSubview(self.btnCreatePlace)
         
+        
+        self.darkOverlay = UIView(frame: frame)
+        self.darkOverlay.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.8)
+        
+        var y = padding
+        
+        let btnCancel = UIButton(frame: CGRect(x: padding, y: y, width: 44, height:44))
+        btnCancel.setImage(UIImage(named: "cancel_icon.png"), forState: .Normal)
+        btnCancel.addTarget(
+            self,
+            action: #selector(CTMapViewController.dismissOverlay),
+            forControlEvents: .TouchUpInside
+        )
+        self.darkOverlay.addSubview(btnCancel)
+        y += btnCancel.frame.size.height+60
+        
+        self.passwordField = CTTextField(frame: CGRect(x: padding, y: y, width: frame.size.width-2*padding, height: 24))
+        self.passwordField.textColor = .whiteColor()
+        self.passwordField.attributedPlaceholder = NSAttributedString(string: "Password", attributes: [NSForegroundColorAttributeName :UIColor.whiteColor()])
+        self.darkOverlay.addSubview(passwordField)
+        y += self.passwordField.frame.size.height+padding
+        
+        let btnEnter = CTButton(frame: CGRect(x: padding, y: y, width: frame.size.width-2*padding, height: 44))
+        btnEnter.setTitle("Enter", forState: .Normal)
+        btnEnter.backgroundColor = UIColor(red: 0.25, green: 0, blue: 0.75, alpha: 1.0)
+        btnEnter.addTarget(self, action: #selector(CTMapViewController.enterSelectedPlace), forControlEvents: .TouchUpInside)
+        self.darkOverlay.addSubview(btnEnter)
+    
+        self.darkOverlay.alpha = 0.0
+        self.darkOverlay.addGestureRecognizer(
+            UITapGestureRecognizer(target: self, action: #selector(CTMapViewController.dismissOverlay))
+        )
+        
+        view.addSubview(self.darkOverlay)
         self.view = view
     }
     
@@ -84,8 +121,31 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
         }
         
         self.showCreateButton()
-        
     }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        self.dismissOverlay()
+        self.passwordField.text = ""
+    }
+    
+    func dismissOverlay(){
+        
+        UIView.animateWithDuration(
+            0.35,
+            animations: {
+                self.darkOverlay.alpha = 0.0
+            })
+    }
+    
+    func showDarkOverlay(){
+        UIView.animateWithDuration(
+            0.35,
+            animations: {
+                self.darkOverlay.alpha = 1.0
+        })
+    }
+    
     
     func placeCreated(notification: NSNotification){
         if let place = notification.userInfo!["place"] as? CTPlace {
@@ -147,13 +207,36 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
         
     }
     
-    func searchPlaces(lat: CLLocationDegrees, lng: CLLocationDegrees){
+    func enterSelectedPlace(){
         
-        //MAKE API REQUEST TO OUR BACKEND:
-        let params = [
-            "lat": lat,
-            "lng": lng
-        ]
+        if(self.selectedPlace?.visited == true || self.passwordField.text == self.selectedPlace?.password){
+            let chatVc = CTChatViewController()
+            chatVc.place = self.selectedPlace
+            self.navigationController?.pushViewController(chatVc, animated: true)
+            return
+        }
+        
+        if(self.passwordField.text != self.selectedPlace?.password){
+            let alert = UIAlertController(
+                title: "Wrong Password",
+                message: "Please try again",
+                preferredStyle: .Alert
+            )
+            
+            alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: { action in
+                
+            }))
+            self.presentViewController(alert, animated: true, completion: nil)
+            return
+        }
+    
+    }
+    
+    func searchPlaces(lat: CLLocationDegrees, lng: CLLocationDegrees){
+        var params = Dictionary<String, AnyObject>()
+        params["lat"] = lat
+        params["lng"] = lng
+        params["key"] = "123" //temporary key for testing
         
         APIManager.getRequest("/api/place", params: params, completion: { response in
             print("\(response)")
@@ -219,14 +302,14 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
     }
     
     func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        self.selectedPlace = view.annotation as? CTPlace
         
-        let place = view.annotation as! CTPlace
-        print("calloutAccessoryControlTapped: \(place.name)")
+        if(self.selectedPlace?.visited == true){
+            self.enterSelectedPlace()
+            return
+        }
         
-        let chatVc = CTChatViewController()
-        chatVc.place = place
-        self.navigationController?.pushViewController(chatVc, animated: true)
-        
+        self.showDarkOverlay()
     }
     
     // MARK: LocationManagerDelegate
