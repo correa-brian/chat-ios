@@ -17,12 +17,14 @@ class CTPlace: NSObject, MKAnnotation {
     var state: String!
     var zip: String!
     var address: String!
+    var password: String!
     var lat: Double!
     var lng: Double!
+    var visited = false
     
     func populate(placeInfo: Dictionary<String, AnyObject>){
         
-        let keys = ["name", "city", "state", "address", "zip", "id"]
+        let keys = ["name", "city", "state", "address", "zip", "id", "password"]
         for key in keys {
             let value = placeInfo[key]
             self.setValue(value, forKey: key)
