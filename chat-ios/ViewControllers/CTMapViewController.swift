@@ -131,6 +131,8 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
     
     func dismissOverlay(){
         
+        self.passwordField.resignFirstResponder()
+        
         UIView.animateWithDuration(
             0.35,
             animations: {
@@ -208,6 +210,8 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
     }
     
     func enterSelectedPlace(){
+        
+        self.passwordField.resignFirstResponder()
         
         if(self.selectedPlace?.visited == true || self.passwordField.text == self.selectedPlace?.password){
             let chatVc = CTChatViewController()
@@ -304,12 +308,33 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
     func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         self.selectedPlace = view.annotation as? CTPlace
         
-        if(self.selectedPlace?.visited == true){
+        // user previously entered, do not enforce password again:
+        if (self.selectedPlace?.visited == true){
             self.enterSelectedPlace()
             return
         }
         
-        self.showDarkOverlay()
+        // user has to enter password
+        if (CTViewController.currentUser.id == nil){
+            self.showDarkOverlay()
+            return
+        }
+        
+        //user is an admin of place, do not need password
+        
+        let isAdmin = self.selectedPlace?.admins.contains(CTViewController.currentUser.id!)
+        
+        
+        if (isAdmin == false){ //user has to enter password
+            self.showDarkOverlay()
+            return
+        }
+        
+        // user is an admin of place, do not need password:
+        let chatVc = CTChatViewController()
+        chatVc.place = self.selectedPlace
+        self.navigationController?.pushViewController(chatVc, animated: true)
+        
     }
     
     // MARK: LocationManagerDelegate
