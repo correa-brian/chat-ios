@@ -13,10 +13,10 @@ class CTPost: NSObject {
     
     var id: String!
     var message: String!
-    var place: String!
-    var from: String!
+    var from: Dictionary<String,AnyObject>!
     var timestamp: NSDate!
     var formattedDate: String!
+    var place: Dictionary<String,AnyObject>!
     
     //Images:
     var image: Dictionary<String,AnyObject>!
@@ -25,7 +25,6 @@ class CTPost: NSObject {
     var imageUrl: String!
     var imageData: UIImage?
     var isFetching = false
-    
     
     func populate(postInfo: Dictionary<String, AnyObject!>){
         let keys = ["message", "place", "from"]
