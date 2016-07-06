@@ -30,6 +30,7 @@
 		D3B873F51D09D35C00BD0FAF /* profile-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D3B873F41D09D35C00BD0FAF /* profile-icon@2x.png */; };
 		D3B873F91D09EC6900BD0FAF /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3B873F81D09EC6900BD0FAF /* Config.swift */; };
 		D3B873FB1D09EDEE00BD0FAF /* CTProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3B873FA1D09EDEE00BD0FAF /* CTProfile.swift */; };
+		D3BC38F01D2D77A200FDB3E5 /* CTPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3BC38EF1D2D77A200FDB3E5 /* CTPostViewController.swift */; };
 		D3CDF57A1D13197C00B7E86B /* CTTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CDF5791D13197C00B7E86B /* CTTextField.swift */; };
 		D3CDF57C1D13347000B7E86B /* CTChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CDF57B1D13347000B7E86B /* CTChatViewController.swift */; };
 		D3CDF57E1D1337ED00B7E86B /* CTChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CDF57D1D1337ED00B7E86B /* CTChatTableViewCell.swift */; };
@@ -64,6 +65,7 @@
 		D3B873F41D09D35C00BD0FAF /* profile-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "profile-icon@2x.png"; sourceTree = "<group>"; };
 		D3B873F81D09EC6900BD0FAF /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		D3B873FA1D09EDEE00BD0FAF /* CTProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTProfile.swift; sourceTree = "<group>"; };
+		D3BC38EF1D2D77A200FDB3E5 /* CTPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTPostViewController.swift; sourceTree = "<group>"; };
 		D3CDF5791D13197C00B7E86B /* CTTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTTextField.swift; sourceTree = "<group>"; };
 		D3CDF57B1D13347000B7E86B /* CTChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTChatViewController.swift; sourceTree = "<group>"; };
 		D3CDF57D1D1337ED00B7E86B /* CTChatTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTChatTableViewCell.swift; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 				D3957F731D0B3A310060888D /* Account */,
 				D3B726091D0746DF003C3AC6 /* CTMapViewController.swift */,
 				D3CDF57B1D13347000B7E86B /* CTChatViewController.swift */,
+				D3BC38EF1D2D77A200FDB3E5 /* CTPostViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -336,6 +339,7 @@
 				D3797A041D1B164A004BDA9F /* CTPost.swift in Sources */,
 				D3CDF57A1D13197C00B7E86B /* CTTextField.swift in Sources */,
 				D3CDF57C1D13347000B7E86B /* CTChatViewController.swift in Sources */,
+				D3BC38F01D2D77A200FDB3E5 /* CTPostViewController.swift in Sources */,
 				D33DF9651D107E6C001E8E27 /* CTButton.swift in Sources */,
 				D3B7260B1D0746DF003C3AC6 /* CTMapViewController.swift in Sources */,
 				D3957F761D0B3A740060888D /* CTAccountViewController.swift in Sources */,
