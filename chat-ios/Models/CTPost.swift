@@ -84,7 +84,7 @@ class CTPost: NSObject {
         
     }
     
-    func fetchImage(){
+    func fetchImage(completion:((image: UIImage) -> Void)?){
         if(self.imageUrl.characters.count == 0){
             return
         }
@@ -106,6 +106,9 @@ class CTPost: NSObject {
             
             if let img = UIImage(data: data!){
                 self.imageData = img
+                if(completion != nil){
+                    completion!(image: img)
+                }
             }
         }
     }
