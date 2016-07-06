@@ -13,7 +13,6 @@ class CTPostViewController: CTViewController, UIScrollViewDelegate {
     var post: CTPost!
     var postImage: UIImageView!
     var scrollView: UIScrollView!
-
     
     required init?(coder aDecoder: NSCoder){
         super.init(coder: aDecoder)
@@ -41,13 +40,8 @@ class CTPostViewController: CTViewController, UIScrollViewDelegate {
         self.postImage.layer.addSublayer(layer)
         
         let padding = CGFloat(Constants.padding)
-        
-        let lblPlace = UILabel(frame: CGRect(x: padding, y: padding, width: frame.size.width-2*padding, height: 22))
-        lblPlace.textColor = .whiteColor()
-        lblPlace.font = UIFont(name: "Heiti SC", size: 18)
-        lblPlace.text = "WeWork Nomad"
-
-        self.postImage.addSubview(lblPlace)
+        let width = frame.size.width-2*padding
+        let font = UIFont(name: "Heiti SC", size: 14)
         
         view.addSubview(self.postImage)
         
@@ -57,10 +51,52 @@ class CTPostViewController: CTViewController, UIScrollViewDelegate {
         self.scrollView.backgroundColor = .clearColor()
         let bgText = UIView(frame: CGRect(x: 0, y: 250, width: frame.size.width, height: frame.size.height))
         bgText.backgroundColor = .whiteColor()
-        self.scrollView.addSubview(bgText)
-        self.scrollView.contentSize = CGSizeMake(0, 1000)
-        view.addSubview(self.scrollView)
         
+        let lblPlace = UILabel(frame: CGRect(x: padding, y: padding, width: width, height: 24))
+        lblPlace.textColor = .darkGrayColor()
+        lblPlace.font = UIFont.boldSystemFontOfSize(24)
+        lblPlace.text = self.post.place["name"] as? String
+        bgText.addSubview(lblPlace)
+        
+        var y = padding+lblPlace.frame.size.height
+        let lblUsername = UILabel(frame: CGRect(x: padding, y: y, width: width, height: 22))
+        lblUsername.textColor = .darkGrayColor()
+        lblUsername.font = font!
+        lblUsername.text = self.post.from["username"] as? String
+        bgText.addSubview(lblUsername)
+        y += lblUsername.frame.size.height
+        
+        let lblDate = UILabel(frame: CGRect(x: padding, y: y, width: width, height: 22))
+        lblDate.textColor = .darkGrayColor()
+        lblDate.font = font!
+        lblDate.text = self.post.formattedDate
+        bgText.addSubview(lblDate)
+        y += lblDate.frame.size.height+padding
+
+        let line = UIView(frame: CGRect(x: 0, y: y, width: frame.size.width, height: 1))
+        line.backgroundColor = .lightGrayColor()
+        bgText.addSubview(line)
+        y += padding
+        
+        let str = NSString(string: self.post.message)
+        let bounds = str.boundingRectWithSize(
+            CGSizeMake(0, 0),
+            options: .UsesLineFragmentOrigin,
+            attributes: [NSFontAttributeName:font!],
+            context: nil)
+        
+        let lblText = UILabel(frame: CGRect(x: padding, y: y, width: width, height: bounds.size.height))
+        lblText.font = font
+        lblText.numberOfLines = 0
+        lblText.lineBreakMode = .ByWordWrapping
+        lblText.text = self.post.message
+        lblText.textColor = .darkGrayColor()
+        bgText.addSubview(lblText)
+        
+        self.scrollView.addSubview(bgText)
+        self.scrollView.contentSize = CGSizeMake(width, 1000)
+        
+        view.addSubview(self.scrollView)
         self.view = view
     }
     
@@ -91,7 +127,6 @@ class CTPostViewController: CTViewController, UIScrollViewDelegate {
                 })
             })
         })
-    
     }
     
     func resizeFrame(frame: CGRect, image: UIImage) -> CGRect{
@@ -103,11 +138,19 @@ class CTPostViewController: CTViewController, UIScrollViewDelegate {
         
     }
     
+    //MARK: - ScrollviewDelegate
     func scrollViewDidScroll(scrollView: UIScrollView) {
         print("scrollViewDidScroll: \(scrollView.contentOffset.y)")
         
         if(scrollView.contentOffset.y>0){
             self.postImage.transform = CGAffineTransformIdentity
+            
+            //span 0 to 250
+            var frame = self.postImage.frame
+            let offset = -0.4*scrollView.contentOffset.y
+            frame.origin.y = offset
+            self.postImage.frame = frame
+            
             return
         }
         

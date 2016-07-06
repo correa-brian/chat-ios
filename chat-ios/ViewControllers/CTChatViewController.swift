@@ -312,9 +312,7 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
         postInfo["timestamp"] = "\(NSDate().timeIntervalSince1970)"
         postInfo["place"] = ["id":self.place.id, "name":self.place.name]
         postInfo["image"] = imageInfo
-                
         return postInfo
-        
     }
     
     func postMessage(){
