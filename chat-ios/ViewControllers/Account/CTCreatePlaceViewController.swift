@@ -10,6 +10,10 @@ import UIKit
 
 class CTCreatePlaceViewController: CTViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
     
+    var selectedImage: UIImage?
+    var placeImageView: UIImageView!
+    var placeInfo = Dictionary<String, AnyObject>()
+    
     var textFields = Array<UITextField>()
     var statePicker: UIPickerView!
     var states =  [ "AL", "AK", "AS", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FM", "FL", "GA", "GU", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MH", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PW", "PA", "PR", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VI", "VA", "WA", "WV", "WI", "WY" ]
@@ -33,6 +37,11 @@ class CTCreatePlaceViewController: CTViewController, UITextFieldDelegate, UIPick
         let width = frame.size.width-2*padding
         let height = CGFloat(32)
         var y = CGFloat(Constants.origin_y)
+        
+        self.placeImageView = UIImageView(frame: CGRect(x: padding, y: 40, width: 64, height: 64))
+        self.placeImageView.center = CGPointMake(0.5*frame.size.width, self.placeImageView.center.y)
+        self.placeImageView.alpha = 0
+        view.addSubview(self.placeImageView)
         
         let fieldNames = ["Name", "Address", "City", "State", "Password"]
         for fieldName in fieldNames {
@@ -110,6 +119,31 @@ class CTCreatePlaceViewController: CTViewController, UITextFieldDelegate, UIPick
         }
     }
     
+    //MARK: - UIImagePickerDelegate
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]){
+        
+        print("didFinishPickingMediaWithInfo: \(info)")
+        
+        if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
+            self.selectedImage = image
+        }
+        
+        picker.dismissViewControllerAnimated(true, completion: {
+            UIView.transitionWithView(
+                self.placeImageView,
+                duration: 0.3,
+                options: UIViewAnimationOptions.TransitionFlipFromLeft,
+                animations: {
+                    self.placeImageView.image = self.selectedImage
+                    self.placeImageView.alpha = 1.0
+                },
+                completion: { finished in
+                    self.createPlace(self.placeInfo)
+            })
+        })
+    }
+    
+    
     //MARK: - TextFieldDelegate
     
     func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
@@ -131,7 +165,6 @@ class CTCreatePlaceViewController: CTViewController, UITextFieldDelegate, UIPick
         }
         
         return true
-        
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
@@ -142,7 +175,7 @@ class CTCreatePlaceViewController: CTViewController, UITextFieldDelegate, UIPick
         if (index == self.textFields.count-1){ //password field, register
             
             var missingValue = ""
-            var placeInfo = Dictionary<String, AnyObject>()
+            self.placeInfo = Dictionary<String, AnyObject>()
             
             for textField in self.textFields {
                 if (textField.text?.characters.count == 0){
@@ -150,7 +183,7 @@ class CTCreatePlaceViewController: CTViewController, UITextFieldDelegate, UIPick
                     break
                 }
                 
-                placeInfo[textField.placeholder!.lowercaseString] = textField.text!
+                self.placeInfo[textField.placeholder!.lowercaseString] = textField.text!
             }
             
             //Incomplete:
@@ -169,9 +202,45 @@ class CTCreatePlaceViewController: CTViewController, UITextFieldDelegate, UIPick
                 return true
             }
             
-            placeInfo["admins"] = [CTViewController.currentUser.id!]
+            self.placeInfo["admins"] = [CTViewController.currentUser.id!]
             print("\(placeInfo)")
             
+            //ask if user wants to include picture
+            
+            let alert = UIAlertController(
+                title: "Picture",
+                message: "Would you like to include a picture?",
+                preferredStyle: .Alert
+            )
+            
+            alert.addAction(UIAlertAction(title: "Yes", style: .Default, handler: { action in
+                //show image options
+                textField.resignFirstResponder()
+                let action = self.showCameraOptions()
+                self.presentViewController(action, animated: true, completion: nil)
+            }))
+            
+            alert.addAction(UIAlertAction(title: "No", style: .Default, handler: { action in
+                textField.resignFirstResponder()
+                self.createPlace(self.placeInfo)
+            }))
+            
+            self.presentViewController(alert, animated: true, completion: nil)
+            
+            return true
+        }
+        
+        let nextField = self.textFields[index+1]
+        nextField.becomeFirstResponder()
+    
+        return true
+        
+    }
+    
+    func createPlace(placeInfo: Dictionary<String, AnyObject>){
+        
+        //check if image first:
+        if(self.selectedImage == nil){
             APIManager.postRequest("/api/place",
                                    
                                    params: placeInfo,
@@ -187,26 +256,26 @@ class CTCreatePlaceViewController: CTViewController, UITextFieldDelegate, UIPick
                                             object: nil,
                                             userInfo: ["place":place]
                                         )
-                                    
+                                        
                                         let notificationCenter = NSNotificationCenter.defaultCenter()
                                         notificationCenter.postNotification(notification)
                                         self.dismissViewControllerAnimated(true, completion: nil)
                                     }
             })
+            return
             
-            return true
         }
         
-        let nextField = self.textFields[index+1]
-        nextField.becomeFirstResponder()
-    
-        return true
-        
+        //upload image
+        self.uploadImage(self.selectedImage!, completion: { imageInfo in
+            self.selectedImage = nil // nil it out to prevent infinite loop
+            self.placeInfo["image"] = imageInfo
+            self.createPlace(self.placeInfo)
+        })
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        
     }
 
 }

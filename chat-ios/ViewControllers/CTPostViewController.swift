@@ -27,7 +27,7 @@ class CTPostViewController: CTViewController, UIScrollViewDelegate {
         
         let frame = UIScreen.mainScreen().bounds
         let view = UIView(frame: frame)
-        view.backgroundColor = UIColor.blueColor()
+        view.backgroundColor = UIColor.whiteColor()
 
         self.postImage = UIImageView(frame: CGRectMake(0, 0, frame.size.width, frame.size.width))
         self.postImage.alpha = 0
@@ -80,7 +80,7 @@ class CTPostViewController: CTViewController, UIScrollViewDelegate {
         
         let str = NSString(string: self.post.message)
         let bounds = str.boundingRectWithSize(
-            CGSizeMake(0, 0),
+            CGSizeMake(width, 1000),
             options: .UsesLineFragmentOrigin,
             attributes: [NSFontAttributeName:font!],
             context: nil)
@@ -94,7 +94,14 @@ class CTPostViewController: CTViewController, UIScrollViewDelegate {
         bgText.addSubview(lblText)
         
         self.scrollView.addSubview(bgText)
-        self.scrollView.contentSize = CGSizeMake(width, 1000)
+        var contentHeight = bgText.frame.origin.y+lblText.frame.origin.y+bounds.size.height+padding+64
+        
+        //enforce minimum height for scroll-ability:
+        if (contentHeight < frame.size.height){
+            contentHeight = frame.size.height+100
+        }
+        
+        self.scrollView.contentSize = CGSizeMake(width, contentHeight)
         
         view.addSubview(self.scrollView)
         self.view = view
