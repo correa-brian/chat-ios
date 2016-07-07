@@ -19,13 +19,15 @@ class CTPlace: NSObject, MKAnnotation {
     var address: String!
     var password: String!
     var admins: Array<String>!
+    var image: Dictionary<String,AnyObject>!
     var lat: Double!
     var lng: Double!
     var visited = false
     
     func populate(placeInfo: Dictionary<String, AnyObject>){
         
-        let keys = ["name", "city", "state", "address", "zip", "id", "password", "admins"]
+        let keys = ["name", "city", "state", "address", "zip", "id", "password", "admins", "image"]
+        
         for key in keys {
             let value = placeInfo[key]
             self.setValue(value, forKey: key)
