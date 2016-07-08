@@ -12,6 +12,7 @@ struct Constants {
     
 //    static let baseUrl = "http:localhost:3000"
     static let baseUrl = "https://velocity360-chat.herokuapp.com"
+    static let APIKey = "123" //temporary for testing
     
     //Notification:
     static let kUserLoggedInNotification = "UserLoggedInNotification"
@@ -19,4 +20,5 @@ struct Constants {
     
     static let padding = 20
     static let origin_y = 90
+    static let baseFont = "Helevetica"
 }
