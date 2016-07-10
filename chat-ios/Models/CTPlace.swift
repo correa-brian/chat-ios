@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import Alamofire
 
 class CTPlace: NSObject, MKAnnotation {
     
@@ -19,10 +20,14 @@ class CTPlace: NSObject, MKAnnotation {
     var address: String!
     var password: String!
     var admins: Array<String>!
-    var image: Dictionary<String,AnyObject>!
     var lat: Double!
     var lng: Double!
     var visited = false
+    
+    var image: Dictionary<String,AnyObject>!
+    var thumbnailUrl: String!
+    var thumbnailData: UIImage?
+    var isFetching = false
     
     func populate(placeInfo: Dictionary<String, AnyObject>){
         
@@ -37,6 +42,48 @@ class CTPlace: NSObject, MKAnnotation {
             self.lat = _geo[0]
             self.lng = _geo[1]
         }
+        
+        if (self.image == nil){
+            return
+        }
+        
+        if let _thumbnailUrl = self.image["thumb"] as? String?{
+            self.thumbnailUrl = _thumbnailUrl
+        }
+    }
+    
+    func fetchThumbnail(completion: ((image: UIImage) -> Void)?){
+        
+        if (self.thumbnailUrl.characters.count == 0){
+            return
+        }
+        
+        if(self.thumbnailData != nil){
+            return
+        }
+        
+        if (self.isFetching == true){
+            return
+        }
+        
+        self.isFetching = true
+        Alamofire.request(.GET, self.thumbnailUrl, parameters: nil).response { (req, res, data, error) in
+            self.isFetching = false
+            if (error != nil){
+                return
+            }
+            
+            if let img = UIImage(data: data!){
+                self.thumbnailData = img
+                
+                if(completion == nil){
+                    return
+                }
+                completion!(image: img)
+            }
+            
+        }
+        
     }
 
     //MARK: - MKAnnotation Overrides
