@@ -132,7 +132,6 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
     func dismissOverlay(){
         
         self.passwordField.resignFirstResponder()
-        
         UIView.animateWithDuration(
             0.35,
             animations: {
@@ -141,6 +140,7 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
     }
     
     func showDarkOverlay(){
+        self.passwordField.becomeFirstResponder()
         UIView.animateWithDuration(
             0.35,
             animations: {
@@ -214,6 +214,7 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
         self.passwordField.resignFirstResponder()
         
         if(self.selectedPlace?.visited == true || self.passwordField.text == self.selectedPlace?.password){
+            self.passwordField.resignFirstResponder()
             let chatVc = CTChatViewController()
             chatVc.place = self.selectedPlace
             self.navigationController?.pushViewController(chatVc, animated: true)
@@ -240,7 +241,7 @@ class CTMapViewController: CTViewController, CLLocationManagerDelegate, MKMapVie
         var params = Dictionary<String, AnyObject>()
         params["lat"] = lat
         params["lng"] = lng
-        params["key"] = "123" //temporary key for testing
+        params["key"] = Constants.APIKey //temporary key for testing
         
         APIManager.getRequest("/api/place", params: params, completion: { response in
             print("\(response)")

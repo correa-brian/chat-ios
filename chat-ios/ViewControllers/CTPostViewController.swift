@@ -38,11 +38,6 @@ class CTPostViewController: CTViewController, UIScrollViewDelegate {
         let blk = UIColor(red: 0, green: 0, blue: 0, alpha: 0.7)
         layer.colors = [blk.CGColor, UIColor.clearColor().CGColor]
         self.postImage.layer.addSublayer(layer)
-        
-        let padding = CGFloat(Constants.padding)
-        let width = frame.size.width-2*padding
-        let font = UIFont(name: "Heiti SC", size: 14)
-        
         view.addSubview(self.postImage)
         
         self.scrollView = UIScrollView(frame: frame)
@@ -52,30 +47,43 @@ class CTPostViewController: CTViewController, UIScrollViewDelegate {
         let bgText = UIView(frame: CGRect(x: 0, y: 250, width: frame.size.width, height: frame.size.height))
         bgText.backgroundColor = .whiteColor()
         
+        let padding = CGFloat(Constants.padding)
+        let width = frame.size.width-2*padding
+        
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: 102.5))
+        headerView.backgroundColor = UIColor(red: 0.88, green: 0.79, blue: 0.95, alpha: 1.0)
+        
         let lblPlace = UILabel(frame: CGRect(x: padding, y: padding, width: width, height: 24))
         lblPlace.textColor = .darkGrayColor()
         lblPlace.font = UIFont.boldSystemFontOfSize(24)
         lblPlace.text = self.post.place["name"] as? String
-        bgText.addSubview(lblPlace)
+        headerView.addSubview(lblPlace)
         
+        let font = UIFont(name: "Heiti SC", size: 14)
         var y = padding+lblPlace.frame.size.height
-        let lblUsername = UILabel(frame: CGRect(x: padding, y: y, width: width, height: 22))
+        let lblUsername = UILabel(frame: CGRect(x: padding, y: y, width: width, height: 18))
         lblUsername.textColor = .darkGrayColor()
-        lblUsername.font = font!
+        lblUsername.font = font
         lblUsername.text = self.post.from["username"] as? String
-        bgText.addSubview(lblUsername)
+        headerView.addSubview(lblUsername)
         y += lblUsername.frame.size.height
         
-        let lblDate = UILabel(frame: CGRect(x: padding, y: y, width: width, height: 22))
+        let lblDate = UILabel(frame: CGRect(x: padding, y: y, width: width, height: 18))
         lblDate.textColor = .darkGrayColor()
-        lblDate.font = font!
+        lblDate.font = font
         lblDate.text = self.post.formattedDate
-        bgText.addSubview(lblDate)
+        headerView.addSubview(lblDate)
         y += lblDate.frame.size.height+padding
 
-        let line = UIView(frame: CGRect(x: 0, y: y, width: frame.size.width, height: 1))
+        let line = UIView(frame: CGRect(x: 0, y: headerView.frame.size.height-0.5, width: frame.size.width, height: 0.5))
         line.backgroundColor = .lightGrayColor()
-        bgText.addSubview(line)
+        headerView.addSubview(line)
+        bgText.addSubview(headerView)
+        
+        let dropShadow = UIImageView(frame: CGRect(x: 0, y: headerView.frame.origin.y+headerView.frame.size.height, width: frame.size.width, height: 12))
+        dropShadow.image = UIImage(named: "dropShadow.png")
+        bgText.addSubview(dropShadow)
+        
         y += padding
         
         let str = NSString(string: self.post.message)

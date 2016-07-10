@@ -15,6 +15,8 @@
 		D32EAE681D21B3900020D7FF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D32EAE671D21B3900020D7FF /* GoogleService-Info.plist */; };
 		D33DF9651D107E6C001E8E27 /* CTButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33DF9641D107E6C001E8E27 /* CTButton.swift */; };
 		D33DF9671D1083EC001E8E27 /* CTCreatePlaceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D33DF9661D1083EC001E8E27 /* CTCreatePlaceViewController.swift */; };
+		D34AA07F1D30254800CDCBB7 /* CTPlaceTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D34AA07E1D30254800CDCBB7 /* CTPlaceTableViewCell.swift */; };
+		D34AA0831D3040B400CDCBB7 /* dropShadow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D34AA0821D3040B400CDCBB7 /* dropShadow@2x.png */; };
 		D3797A041D1B164A004BDA9F /* CTPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3797A031D1B164A004BDA9F /* CTPost.swift */; };
 		D3957F761D0B3A740060888D /* CTAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3957F741D0B3A740060888D /* CTAccountViewController.swift */; };
 		D3957F771D0B3A740060888D /* CTRegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3957F751D0B3A740060888D /* CTRegisterViewController.swift */; };
@@ -48,6 +50,8 @@
 		D32EAE671D21B3900020D7FF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D33DF9641D107E6C001E8E27 /* CTButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTButton.swift; sourceTree = "<group>"; };
 		D33DF9661D1083EC001E8E27 /* CTCreatePlaceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTCreatePlaceViewController.swift; sourceTree = "<group>"; };
+		D34AA07E1D30254800CDCBB7 /* CTPlaceTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTPlaceTableViewCell.swift; sourceTree = "<group>"; };
+		D34AA0821D3040B400CDCBB7 /* dropShadow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dropShadow@2x.png"; sourceTree = "<group>"; };
 		D3797A031D1B164A004BDA9F /* CTPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTPost.swift; sourceTree = "<group>"; };
 		D3957F741D0B3A740060888D /* CTAccountViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTAccountViewController.swift; sourceTree = "<group>"; };
 		D3957F751D0B3A740060888D /* CTRegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTRegisterViewController.swift; sourceTree = "<group>"; };
@@ -107,6 +111,7 @@
 				D33DF9641D107E6C001E8E27 /* CTButton.swift */,
 				D3CDF5791D13197C00B7E86B /* CTTextField.swift */,
 				D3CDF57D1D1337ED00B7E86B /* CTChatTableViewCell.swift */,
+				D34AA07E1D30254800CDCBB7 /* CTPlaceTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -195,6 +200,7 @@
 				D306D42F1D246A3B006166D6 /* back_icon@2x.png */,
 				D306D4291D22F753006166D6 /* camera-icon@2x.png */,
 				D306D4311D2474AD006166D6 /* pencil_icon@2x.png */,
+				D34AA0821D3040B400CDCBB7 /* dropShadow@2x.png */,
 				D306D42D1D245437006166D6 /* cancel_icon@2x.png */,
 				D306D42B1D244F98006166D6 /* logo-icon@2x.png */,
 				D3B873F41D09D35C00BD0FAF /* profile-icon@2x.png */,
@@ -267,6 +273,7 @@
 				D306D4321D2474AD006166D6 /* pencil_icon@2x.png in Resources */,
 				D3B725FA1D073EA2003C3AC6 /* LaunchScreen.storyboard in Resources */,
 				D3B873F11D09D27D00BD0FAF /* globe-icon@2x.png in Resources */,
+				D34AA0831D3040B400CDCBB7 /* dropShadow@2x.png in Resources */,
 				D306D42C1D244F98006166D6 /* logo-icon@2x.png in Resources */,
 				D32EAE681D21B3900020D7FF /* GoogleService-Info.plist in Resources */,
 				D3B725F71D073EA2003C3AC6 /* Assets.xcassets in Resources */,
@@ -342,6 +349,7 @@
 				D3BC38F01D2D77A200FDB3E5 /* CTPostViewController.swift in Sources */,
 				D33DF9651D107E6C001E8E27 /* CTButton.swift in Sources */,
 				D3B7260B1D0746DF003C3AC6 /* CTMapViewController.swift in Sources */,
+				D34AA07F1D30254800CDCBB7 /* CTPlaceTableViewCell.swift in Sources */,
 				D3957F761D0B3A740060888D /* CTAccountViewController.swift in Sources */,
 				D3957F791D0B3AEE0060888D /* CTLoginViewController.swift in Sources */,
 				D3B7260E1D074918003C3AC6 /* APIManager.swift in Sources */,
