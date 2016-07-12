@@ -24,12 +24,4 @@ class CTButton: UIButton {
         self.titleLabel?.font = UIFont(name: "Arial", size: 16)
     }
 
-    /*
-    // Only override drawRect: if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func drawRect(rect: CGRect) {
-        // Drawing code
-    }
-    */
-
 }

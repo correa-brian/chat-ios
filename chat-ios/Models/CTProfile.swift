@@ -23,5 +23,4 @@ class CTProfile: NSObject {
             self.setValue(value, forKey: key)
         }
     }
-
 }
