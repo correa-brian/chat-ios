@@ -14,7 +14,10 @@ class CTAccountViewController: CTViewController, UITableViewDelegate, UITableVie
     var places = Array<CTPlace>()
     var placesTable: UITableView!
     var showsBackButton = false
+    var backgroundImage: UIImageView!
+    var backgroundOverlay: UIImageView!
     
+    // MARK: - Lifecycle Methods
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -23,15 +26,24 @@ class CTAccountViewController: CTViewController, UITableViewDelegate, UITableVie
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         self.title = ""
         self.tabBarItem.title = "Account"
-        self.tabBarItem.image = UIImage(named: "profile-icon.png")
+        self.tabBarItem.image = UIImage(named: "profile_icon.png")
         self.edgesForExtendedLayout = .None
     }
     
     override func loadView() {
         let frame = UIScreen.mainScreen().bounds
         let view = UIView(frame: frame)
-        view.backgroundColor = .whiteColor()
+        view.backgroundColor = .blackColor()
         
+        self.backgroundImage = UIImageView(frame: frame)
+        self.backgroundImage.image = UIImage(named: "account_background.png")
+        self.backgroundImage.alpha = 0.75
+        view.addSubview(backgroundImage)
+        
+        self.backgroundOverlay = UIImageView(frame: frame)
+        self.backgroundOverlay.backgroundColor = .whiteColor()
+        self.backgroundOverlay.alpha = 0.5
+        view.addSubview(backgroundOverlay)
         
         if (CTViewController.currentUser.id == nil){ // not logged in
             self.loadSignupView(frame, view: view)
@@ -51,81 +63,35 @@ class CTAccountViewController: CTViewController, UITableViewDelegate, UITableVie
         
         self.navigationItem.hidesBackButton = !self.showsBackButton
         
-        if(self.showsBackButton == false){
+        if (self.showsBackButton == false){
             self.loadAccountPlaces()
             return
         }
         
-        if (self.showsBackButton){
-            let btnCancel = UIButton(type: .Custom)
-            let cancelIcon = UIImage(named: "cancel_icon.png")!
-            btnCancel.setImage(cancelIcon, forState: .Normal)
-            
-            btnCancel.frame = CGRect(x: 0, y: 0, width: cancelIcon.size.width, height: 44)
-            
-            btnCancel.addTarget(
-                self,
-                action: #selector(CTAccountViewController.exit),
-                forControlEvents: .TouchUpInside
-            )
-            
-            self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: btnCancel)
-            self.loadAccountPlaces()
-        }
+        let btnCancel = UIButton(type: .Custom)
+        let cancelIcon = UIImage(named: "cancel_icon.png")!
+        btnCancel.setImage(cancelIcon, forState: .Normal)
+        
+        btnCancel.frame = CGRect(x: 0, y: 0, width: cancelIcon.size.width, height: 44)
+        
+        btnCancel.addTarget(
+            self,
+            action: #selector(CTAccountViewController.exit),
+            forControlEvents: .TouchUpInside)
+        
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: btnCancel)
+        self.loadAccountPlaces()
+        
     }
     
-    func loadAccountPlaces(){
-        if(CTViewController.currentUser.id == nil){
-            return
-        }
-        
-        let path = "/api/place"
-        
-        var params = Dictionary<String, AnyObject>()
-        params["admins"] = CTViewController.currentUser.id
-        params["key"] = Constants.APIKey // temporary
-        
-        APIManager.getRequest(
-            path,
-            params: params,
-            completion: { response in
-                
-                if let results = response["results"] as? Array<Dictionary<String, AnyObject>>{
-                    print("\(results)")
-                    
-                    for placeInfo in results {
-                        let place = CTPlace()
-                        place.populate(placeInfo)
-                        self.places.append(place)
-                    }
-                    
-                    dispatch_async(dispatch_get_main_queue(), {
-                        self.placesTable.reloadData()
-                        
-                        UIView.animateWithDuration(
-                            1.5,
-                            delay: 0,
-                            usingSpringWithDamping: 0.5,
-                            initialSpringVelocity: 0,
-                            options: UIViewAnimationOptions.CurveEaseInOut,
-                            animations: {
-                                var frame = self.placesTable.frame
-                                frame.origin.y = CGFloat(self.placesTable.tag)
-                                self.placesTable.frame = frame
-                                
-                            },
-                            completion: nil
-                        )
-                    })
-                }
-        })
-    }
+    //MARK: - Account View
     
     func loadAccountView(frame: CGRect, view: UIView){
         let padding = CGFloat(Constants.padding)
         let width = frame.size.width-2*padding
-        let font = UIFont(name: Constants.baseFont, size: 14)
-        
+        let font = UIFont(name: "Heiti SC", size: 14)
+        self.backgroundImage.image = nil
+        view.backgroundColor = .whiteColor()
         let userView = UIView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: 82.5))
         userView.backgroundColor = UIColor(red: 0.88, green: 0.79, blue: 0.95, alpha: 1.0)
         
@@ -145,28 +111,30 @@ class CTAccountViewController: CTViewController, UITableViewDelegate, UITableVie
         
         y += padding+lblEmail.frame.size.height
         
-        view.addSubview(userView)
-        
         let line = UIView(frame: CGRect(x: 0, y: y, width: frame.size.width, height: 0.5))
         line.backgroundColor = .darkGrayColor()
         userView.addSubview(line)
         
         y += line.frame.size.height
         
-        let verticalLine = UIView(frame: CGRect(x: 53, y: y, width: 2, height: frame.size.height-y))
-        verticalLine.backgroundColor = .grayColor()
+        view.addSubview(userView)
+        
+        let verticalLine = UIView(frame: CGRect(x: 53
+            , y: y, width: 2, height: frame.size.height-y))
+        verticalLine.backgroundColor = .darkGrayColor()
         view.addSubview(verticalLine)
         
         self.placesTable = UITableView(frame: CGRect(x: 0, y: frame.size.height, width: frame.size.width, height: frame.size.height-y))
         self.placesTable.tag = Int(y)
+        self.placesTable.autoresizingMask = .FlexibleHeight
         self.placesTable.dataSource = self
         self.placesTable.delegate = self
-        self.placesTable.separatorStyle = .None
         self.placesTable.backgroundColor = .clearColor()
-        self.placesTable.autoresizingMask = .FlexibleHeight
+        self.placesTable.separatorStyle = .None
         self.placesTable.showsVerticalScrollIndicator = false
         self.placesTable.registerClass(CTPlaceTableViewCell.classForCoder(), forCellReuseIdentifier: "cellId")
         self.placesTable.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: 20))
+        
         view.addSubview(self.placesTable)
         
         view.bringSubviewToFront(userView)
@@ -174,12 +142,11 @@ class CTAccountViewController: CTViewController, UITableViewDelegate, UITableVie
         let dropShadow = UIImageView(frame: CGRect(x: 0, y: y, width: frame.size.width, height: 12))
         dropShadow.image = UIImage(named: "dropShadow.png")
         view.addSubview(dropShadow)
+        
     }
     
     //MARK: - TableViewDelegate
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print("PLACES COUNT: \(self.places.count)")
-
         return self.places.count
     }
     
@@ -189,30 +156,35 @@ class CTAccountViewController: CTViewController, UITableViewDelegate, UITableVie
         let cell = tableView.dequeueReusableCellWithIdentifier(CTPlaceTableViewCell.cellId, forIndexPath: indexPath) as! CTPlaceTableViewCell
         cell.lblTitle.text = place.title
         
-        if(place.thumbnailUrl.characters.count == 0){
+        if (place.thumbnailUrl.characters.count == 0){ // no place image exists
             return cell
         }
         
-        if(place.thumbnailData != nil){
+        if (place.thumbnailData != nil){
             cell.thumbnail.image = place.thumbnailData
             return cell
         }
         
+        
         place.fetchThumbnail({ image in
             dispatch_async(dispatch_get_main_queue(), {
                 cell.thumbnail.image = image
-
+                
                 self.performSelector(
                     #selector(CTAccountViewController.animateCell(_:)),
                     withObject: cell,
                     afterDelay: Double(indexPath.row)/2
                 )
-
             })
         })
         
         return cell
+        
     }
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return CTPlaceTableViewCell.defaultHeight
+    }
+    
     
     func animateCell(cell: CTPlaceTableViewCell){
         UIView.transitionWithView(
@@ -222,22 +194,60 @@ class CTAccountViewController: CTViewController, UITableViewDelegate, UITableVie
             animations: {
                 cell.thumbnail.alpha = 1
             },
-            completion: nil
-        )
-    }
-    
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return CTPlaceTableViewCell.defaultHeight
+            completion: nil)
     }
     
     
     //MARK: - Logout
-    
     func logout(){
         APIManager.getRequest("/account/logout", params: nil, completion: { response in
+            
             print("\(response)")
             
         })
+    }
+    
+    func loadAccountPlaces(){
+        
+        if (CTViewController.currentUser.id == nil){
+            return
+        }
+        let path = "/api/place"
+        
+        var params = Dictionary<String, AnyObject>()
+        
+        params["admins"] = CTViewController.currentUser.id
+        params["key"] = Constants.APIKey //temporary key for testing
+        
+        
+        APIManager.getRequest(
+            path,
+            params: params,
+            completion: { response in
+                
+                if let results = response["results"] as? Array<Dictionary<String, AnyObject>>{
+                    print("results")
+                    
+                    for placeInfo in results {
+                        let place = CTPlace()
+                        place.populate(placeInfo)
+                        self.places.append(place)
+                    }
+                    
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.placesTable.reloadData()
+                        
+                        UIView.animateWithDuration(1.25, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity:0, options: UIViewAnimationOptions.CurveEaseInOut, animations: { var frame = self.placesTable.frame
+                            frame.origin.y = CGFloat(self.placesTable.tag)
+                            self.placesTable.frame = frame
+                            }, completion: nil
+                        )
+                        
+                    })
+                }
+        })
+        
+        
     }
     
     //MARK: - Load Sign Up View
@@ -249,6 +259,7 @@ class CTAccountViewController: CTViewController, UITableViewDelegate, UITableVie
         let height = CGFloat(44)
         var y = CGFloat(Constants.origin_y)
         
+        
         let buttonTitles = ["Sign Up", "Login"]
         for btnTitle in buttonTitles {
             let btn = CTButton(frame: CGRect(x: padding, y: y, width: width, height: height))
@@ -257,6 +268,20 @@ class CTAccountViewController: CTViewController, UITableViewDelegate, UITableVie
             self.loginButtons.append(btn)
             view.addSubview(btn)
             y += height+padding
+            
+            //            UIView.animateWithDuration(1.25,
+            //                                       delay: 0,
+            //                                       usingSpringWithDamping: 0.75,
+            //                                       initialSpringVelocity: 0,
+            //                                       options: UIViewAnimationOptions.CurveEaseOut,
+            //                                       animations: {
+            //
+            //                                        var frame = self.loginButtons[0].frame
+            //                                        frame.origin.x = 60
+            //                                        self.loginButtons[].frame = frame
+            //
+            //            }, completion: nil)
+            
         }
         
     }
