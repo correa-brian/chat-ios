@@ -36,6 +36,7 @@
 		D3CDF57C1D13347000B7E86B /* CTChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CDF57B1D13347000B7E86B /* CTChatViewController.swift */; };
 		D3CDF57E1D1337ED00B7E86B /* CTChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3CDF57D1D1337ED00B7E86B /* CTChatTableViewCell.swift */; };
 		D3D527A71D35C9A6008F2650 /* CTInviteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3D527A61D35C9A6008F2650 /* CTInviteViewController.swift */; };
+		D3D527AB1D36C1FF008F2650 /* CTContact.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3D527AA1D36C1FF008F2650 /* CTContact.swift */; };
 		D3F44B431D341F260052FFC3 /* account_background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D3F44B3F1D341F260052FFC3 /* account_background@2x.png */; };
 		D3F44B441D341F260052FFC3 /* email_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D3F44B401D341F260052FFC3 /* email_icon@2x.png */; };
 		D3F44B451D341F260052FFC3 /* key_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D3F44B411D341F260052FFC3 /* key_icon@2x.png */; };
@@ -77,6 +78,7 @@
 		D3CDF57B1D13347000B7E86B /* CTChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTChatViewController.swift; sourceTree = "<group>"; };
 		D3CDF57D1D1337ED00B7E86B /* CTChatTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTChatTableViewCell.swift; sourceTree = "<group>"; };
 		D3D527A61D35C9A6008F2650 /* CTInviteViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTInviteViewController.swift; sourceTree = "<group>"; };
+		D3D527AA1D36C1FF008F2650 /* CTContact.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTContact.swift; sourceTree = "<group>"; };
 		D3F44B3F1D341F260052FFC3 /* account_background@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "account_background@2x.png"; sourceTree = "<group>"; };
 		D3F44B401D341F260052FFC3 /* email_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "email_icon@2x.png"; sourceTree = "<group>"; };
 		D3F44B411D341F260052FFC3 /* key_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "key_icon@2x.png"; sourceTree = "<group>"; };
@@ -196,6 +198,7 @@
 			isa = PBXGroup;
 			children = (
 				D3B726101D074FD7003C3AC6 /* CTPlace.swift */,
+				D3D527AA1D36C1FF008F2650 /* CTContact.swift */,
 				D3B873FA1D09EDEE00BD0FAF /* CTProfile.swift */,
 				D3797A031D1B164A004BDA9F /* CTPost.swift */,
 			);
@@ -367,6 +370,7 @@
 				D34AA07F1D30254800CDCBB7 /* CTPlaceTableViewCell.swift in Sources */,
 				D3957F761D0B3A740060888D /* CTAccountViewController.swift in Sources */,
 				D3D527A71D35C9A6008F2650 /* CTInviteViewController.swift in Sources */,
+				D3D527AB1D36C1FF008F2650 /* CTContact.swift in Sources */,
 				D3957F791D0B3AEE0060888D /* CTLoginViewController.swift in Sources */,
 				D3B7260E1D074918003C3AC6 /* APIManager.swift in Sources */,
 				D3B873F91D09EC6900BD0FAF /* Config.swift in Sources */,

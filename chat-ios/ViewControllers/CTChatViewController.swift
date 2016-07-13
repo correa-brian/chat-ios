@@ -69,10 +69,10 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
         self.chatTable.showsVerticalScrollIndicator = false
         self.chatTable.registerClass(CTChatTableViewCell.classForCoder(), forCellReuseIdentifier: "cellId")
         
-        self.chatTable.tableFooterView = UITableView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: 64))
+        self.chatTable.tableFooterView = UIView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: 64))
         
         let inviteBtn = CTButton(frame: CGRect(x: 20, y: 10, width: frame.size.width-40, height: 44))
-        inviteBtn.setTitle("Invite a Friend", forState: .Normal)
+        inviteBtn.setTitle("Invite Friends", forState: .Normal)
         inviteBtn.layer.borderColor = UIColor.blackColor().CGColor
         inviteBtn.addTarget(self, action: #selector(CTChatViewController.inviteUser(_:)), forControlEvents: .TouchUpInside)
         
