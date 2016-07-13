@@ -71,12 +71,12 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
         
         self.chatTable.tableFooterView = UITableView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: 64))
         
-        let btn = CTButton(frame: CGRect(x: 20, y: 10, width: frame.size.width-40, height: 44))
-        btn.setTitle("Invite a Friend", forState: .Normal)
-        btn.layer.borderColor = UIColor.blackColor().CGColor
-        btn.addTarget(self, action: nil, forControlEvents: .TouchUpInside)
+        let inviteBtn = CTButton(frame: CGRect(x: 20, y: 10, width: frame.size.width-40, height: 44))
+        inviteBtn.setTitle("Invite a Friend", forState: .Normal)
+        inviteBtn.layer.borderColor = UIColor.blackColor().CGColor
+        inviteBtn.addTarget(self, action: #selector(CTChatViewController.inviteUser(_:)), forControlEvents: .TouchUpInside)
         
-        self.chatTable.tableFooterView?.addSubview(btn)
+        self.chatTable.tableFooterView?.addSubview(inviteBtn)
         view.addSubview(self.chatTable)
         
         var height = self.chatTable.contentInset.bottom
@@ -202,6 +202,13 @@ class CTChatViewController: CTViewController, UITableViewDelegate, UITableViewDa
     
     override func viewWillDisappear(animated: Bool) {
         self.firebase.removeObserverWithHandle(self._refHandle)
+    }
+    
+    func inviteUser(btn: UIButton){
+        print("inviteUser")
+        
+        let inviteVc = CTInviteViewController()
+        self.presentViewController(inviteVc, animated: true, completion: nil)
     }
     
     //observer
